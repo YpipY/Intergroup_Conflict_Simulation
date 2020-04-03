@@ -1,6 +1,7 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+
 /**
  * Main class of the simulation
  */
@@ -9,29 +10,30 @@ public class World {
     private ArrayList<Integer> tweetsp1 = new ArrayList<>();
     private ArrayList<Integer> tweetsp2 = new ArrayList<>();
     private ArrayList<Agent> agents = new ArrayList<>();
-    private double bias;
-    private double k;
+    private Random random = new Random();
+    private int demWin = 0;
+    private int repWin = 0;
 
     /**
      * Constructor
      * @param turns number of tunes of the simulation to run
      * @param nAgents number of agents
      */
-    public World(int turns, int nAgents, double bias, double k){
-        this.bias = bias;
-        this.k = k;
+    public World(int turns, int nAgents, int demAgg , int repAgg){
         // creates agents
-        for(int i = 0; i < nAgents; i++){
-            agents.add(new Agent(k));
+        for(int i = 0; i < nAgents/2; i++){
+            agents.add(new SimpleModel(true, demAgg, 0, this));
+            agents.add(new SimpleModel(false, repAgg, 0, this));
         }
+
         // run the simulation
         int speakertime = 0;
         int speaker = 1;
         for(int i = 0; i < turns; i++){
-            System.out.println(i);
+            //System.out.println(i);
             doTurn(speaker);
             speakertime++;
-            if (speakertime > 100){
+            if (speakertime > 10){
                 if (speaker == 1){
                     speaker = 2;
                 } else {
@@ -40,27 +42,71 @@ public class World {
                 speakertime = 0;
             }
         }
-        output();
+
+        int sumDem = 0;
+        int sumRep = 0;
+        for(Agent a : agents){
+            if (a.getDem()){
+                sumDem = sumDem + a.getRes();
+            } else{
+                sumRep = sumRep + a.getRes();
+            }
+        }
+        System.out.println( "Sum Democrats: " + sumDem);
+        System.out.println( "Sum Republicans: " + sumRep);
+        System.out.println( demWin);
+        System.out.println( repWin);
+        //output();
+    }
+
+    /**
+     * Returns an agent of opposite partisanship
+     **/
+    public Agent getFighter(boolean dem){
+        Agent agent = null;
+        if (dem) {
+            while(agent == null || agent.getDem()) {
+                agent = agents.get(random.nextInt(agents.size()));
+            }
+        } else {
+            while(agent == null || !agent.getDem()) {
+                agent = agents.get(random.nextInt(agents.size()));
+            }
+        }
+        return (agent);
     }
 
     /**
      * Advance one turn and make the actors decide if they are going to tweet
      */
     private void doTurn(int speaker){
-        int tweetcountp1 = 0;
-        int tweetcountp2 = 0;
-        double baserate = -9;
+        int tweetcountdem = 0;
+        int tweetcountrep = 0;
         for(Agent a : agents){
-            if (speaker == 1) {
-                tweetcountp1 = tweetcountp1 + a.makeTweet(baserate+bias);
-                tweetcountp2 = tweetcountp2 + a.makeTweet(baserate);
-            } else {
-                tweetcountp1 = tweetcountp1 + a.makeTweet(baserate);
-                tweetcountp2 = tweetcountp2 + a.makeTweet(baserate+bias);
+            if (a.getDem()) {
+                tweetcountdem = tweetcountdem + a.makeTweet(true);
+            } else{
+                tweetcountrep = tweetcountrep + a.makeTweet(true);
             }
         }
-        tweetsp1.add(tweetcountp1);
-        tweetsp2.add(tweetcountp2);
+        System.out.println("dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
+        if (tweetcountdem > tweetcountrep){
+            demWin++;
+            for(Agent a : agents) {
+                if (a.getDem()) {
+                    a.changeRes(10);
+                }
+            }
+        } else if(tweetcountdem < tweetcountrep){
+            repWin++;
+            for(Agent a : agents) {
+                if (!a.getDem()) {
+                    a.changeRes(10);
+                }
+            }
+        }
+        //tweetsp1.add(tweetcountp1);
+        //tweetsp2.add(tweetcountp2);
     }
 
     /**
