@@ -13,16 +13,21 @@ public class World {
     private Random random = new Random();
     private int demWin = 0;
     private int repWin = 0;
+    private int cCost = 0;
+    private int dCost = 0;
+    private int payoff = 0;
 
     /**
      * Constructor
      * @param turns number of tunes of the simulation to run
-     * @param nAgents number of agents
      */
-    public World(int turns, int nAgents, int demAgg , int repAgg){
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int cCost, int dCost, int payoff){
         // creates agents
-        for(int i = 0; i < nAgents/2; i++){
+        for(int i = 0; i < nDems; i++){
             agents.add(new SimpleModel(true, demAgg, 0, this));
+        }
+
+        for(int i = 0; i < nReps; i++){
             agents.add(new SimpleModel(false, repAgg, 0, this));
         }
 
@@ -59,6 +64,10 @@ public class World {
         //output();
     }
 
+    // Getter methods
+    public int getcCost(){return(cCost);};
+    public int getdCost(){return(dCost);};
+
     /**
      * Returns an agent of opposite partisanship
      **/
@@ -94,14 +103,14 @@ public class World {
             demWin++;
             for(Agent a : agents) {
                 if (a.getDem()) {
-                    a.changeRes(10);
+                    a.changeRes(payoff);
                 }
             }
         } else if(tweetcountdem < tweetcountrep){
             repWin++;
             for(Agent a : agents) {
                 if (!a.getDem()) {
-                    a.changeRes(10);
+                    a.changeRes(payoff);
                 }
             }
         }

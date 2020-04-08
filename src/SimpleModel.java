@@ -18,11 +18,11 @@ public class SimpleModel extends Agent{
      **/
     public int makeTweet (boolean speakerDem){
         if (20 >= super.getRamdom()){
-            super.changeRes(-10);
+            super.changeRes(-super.getW().getcCost());
             Agent opponent = super.getW().getFighter(super.getDem());
             if (opponent.fight()){
-                super.changeRes(-50);
-                opponent.changeRes(-50);
+                super.changeRes(-super.getW().getdCost());
+                opponent.changeRes(-super.getW().getdCost());
                 return(0);
             } else {
                 return (1);
