@@ -16,6 +16,8 @@ public class World {
     private int cCost = 0;
     private int dCost = 0;
     private int payoff = 0;
+    private int sumDem = 0;
+    private int sumRep = 0;
 
     /**
      * Constructor
@@ -25,6 +27,10 @@ public class World {
         // creates agents
         for(int i = 0; i < nDems; i++){
             agents.add(new SimpleModel(true, demAgg, 0, this));
+            if (nReps > 0){
+                agents.add(new SimpleModel(false, repAgg, 0, this));
+                nReps--;
+            }
         }
 
         for(int i = 0; i < nReps; i++){
@@ -35,7 +41,6 @@ public class World {
         int speakertime = 0;
         int speaker = 1;
         for(int i = 0; i < turns; i++){
-            //System.out.println(i);
             doTurn(speaker);
             speakertime++;
             if (speakertime > 10){
@@ -47,9 +52,7 @@ public class World {
                 speakertime = 0;
             }
         }
-
-        int sumDem = 0;
-        int sumRep = 0;
+        /*
         for(Agent a : agents){
             if (a.getDem()){
                 sumDem = sumDem + a.getRes();
@@ -57,29 +60,44 @@ public class World {
                 sumRep = sumRep + a.getRes();
             }
         }
+         */
+
         System.out.println( "Sum Democrats: " + sumDem);
         System.out.println( "Sum Republicans: " + sumRep);
-        System.out.println( demWin);
-        System.out.println( repWin);
+        //System.out.println( demWin);
+        //System.out.println( repWin);
         //output();
+        System.exit(1);
     }
 
     // Getter methods
     public int getcCost(){return(cCost);};
     public int getdCost(){return(dCost);};
+    public int getSumDem(){return(sumDem);};
+    public int getSumRep(){return(sumRep);};
 
     /**
-     * Returns an agent of opposite partisanship
+     * Returns an agent of opposite partisanship, that is not currently twitting and does not have a parter already. Null if one cannot be found
+     * @param dem If tune then agent is a democrat, if false then republican
      **/
     public Agent getFighter(boolean dem){
         Agent agent = null;
+        int i = 0;
         if (dem) {
-            while(agent == null || agent.getDem()) {
+            while(agent == null || agent.getDem() || agent.getPartner() != null || agent.getTwitting() != 0) {
                 agent = agents.get(random.nextInt(agents.size()));
+                i++;
+                if (i > agents.size()*10){
+                    return null;
+                }
             }
         } else {
-            while(agent == null || !agent.getDem()) {
+            while(agent == null || !agent.getDem() || agent.getPartner() != null || agent.getTwitting() != 0) {
                 agent = agents.get(random.nextInt(agents.size()));
+                i++;
+                if (i > agents.size()*10){
+                    return null;
+                }
             }
         }
         return (agent);
@@ -87,18 +105,23 @@ public class World {
 
     /**
      * Advance one turn and make the actors decide if they are going to tweet
+     * @param speaker 1 of democrat candidate is speaking, 2 if republican
      */
     private void doTurn(int speaker){
         int tweetcountdem = 0;
         int tweetcountrep = 0;
         for(Agent a : agents){
-            if (a.getDem()) {
+            if (a.getTweetP()) {
                 tweetcountdem = tweetcountdem + a.makeTweet(true);
             } else{
                 tweetcountrep = tweetcountrep + a.makeTweet(true);
             }
         }
+        sumDem = tweetcountdem + sumDem;
+        sumRep = tweetcountrep + sumRep;
+
         System.out.println("dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
+        /*
         if (tweetcountdem > tweetcountrep){
             demWin++;
             for(Agent a : agents) {
@@ -114,8 +137,9 @@ public class World {
                 }
             }
         }
-        //tweetsp1.add(tweetcountp1);
-        //tweetsp2.add(tweetcountp2);
+        */
+        tweetsp1.add(tweetcountdem);
+        tweetsp2.add(tweetcountrep);
     }
 
     /**

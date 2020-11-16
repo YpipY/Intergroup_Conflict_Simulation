@@ -9,6 +9,9 @@ public class Agent{
     private int agg;
     private int res;
     private World w;
+    private int twitting;
+    private Agent partner;
+    private boolean tweetP;
 
     /**
      * Constructor
@@ -19,6 +22,8 @@ public class Agent{
         this.agg = agg;
         this.res = res;
         this.w = w;
+        this.twitting = 0;
+        this.tweetP = true;
     }
 
     // Getter methods
@@ -27,6 +32,9 @@ public class Agent{
     public int getRes(){return (res);}
     public World getW(){return (w);}
     public int getRamdom(){return (random.nextInt(100)+1);}
+    public int getTwitting(){return (twitting);}
+    public Agent getPartner(){return (partner);}
+    public boolean getTweetP(){return (tweetP);}
 
     /**
      * Change agents resource by res
@@ -34,6 +42,30 @@ public class Agent{
      **/
     public void changeRes(int res){
         this.res = this.res + res;
+    }
+
+    /**
+     * Change the twitting value (seconds spend twitting)
+     * @param twitting Amount to increase by
+     **/
+    public void changeTwitting(int twitting){
+        this.twitting = this.twitting + twitting;
+    }
+
+    /**
+     * Add a twitting partner
+     * @param partner Partner to be added, will override previous partner
+     **/
+    public void setPartner(Agent partner){
+        this.partner = partner;
+    }
+
+    /**
+     * Change tweetP
+     * @param tweetP True if agent is currently tweeting about democrats, false if republicans
+     **/
+    public void setTweetP(boolean tweetP){
+        this.tweetP = tweetP;
     }
 
     /**
