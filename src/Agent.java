@@ -16,6 +16,9 @@ public class Agent{
      * Constructor
      * @param dem If tune then agent is a democrat, if false then republican
      * @param agg Aggression [0-100]
+     * @param def defence modifier on aggression
+     * @param t likelihood of deciding to tweet
+     * @param net connectedness of, increases likelihood of retweet. Multiplier
      * @param w The world the agent is operating in
      */
     public Agent(boolean dem, int agg, int def, int t, double net, World w){

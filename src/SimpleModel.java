@@ -1,3 +1,6 @@
+/**
+ * Simple implementation of agent decision-making (no external factors)
+ */
 
 public class SimpleModel extends Agent{
 
@@ -5,6 +8,9 @@ public class SimpleModel extends Agent{
      * Constructor
      * @param dem If tune then agent is a democrat, if false then republican
      * @param agg Aggression [0-100]
+     * @param def defence modifier on aggression
+     * @param t likelihood of deciding to tweet
+     * @param net connectedness of, increases likelihood of retweet. Multiplier
      * @param w The world the agent is operating in
      */
     public SimpleModel(boolean dem, int agg, int def, int t, double net, World w) { super(dem, agg, def, t, net, w); }
@@ -74,7 +80,7 @@ public class SimpleModel extends Agent{
             return (0);
         }
 
-        // retweet behavior (I know this can be done in a single if statement). Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet
+        // retweet behavior (I know this can be done in a single if statement). Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
         if (super.getT() >= super.getW().getRamdomLarge()) {
             if (super.getW().getTotalp1() + super.getW().getTotalp2() != 0 && (super.getNet() * super.getW().getTotalp1()) / (super.getNet() * super.getW().getTotalp1() + super.getW().getTotalp2()) >= super.getW().getRamdom() && super.getDem()) {
                 super.changeTwitting(1);

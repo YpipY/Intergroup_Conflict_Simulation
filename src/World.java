@@ -17,6 +17,12 @@ public class World {
      * @param nReps number of republican agents
      * @param demAgg democrat aggression [0-100]
      * @param repAgg republican aggression [0-100]
+     * @param demDef defence modifier on aggression of democrats
+     * @param repDef defence modifier on aggression of republicans
+     * @param demT likelihood of democrats deciding to tweet
+     * @param repT likelihood of republicans deciding to tweet
+     * @param demnet connectedness of democrats, increases likelihood of retweet
+     * @param repnet connectedness of republicans, increases likelihood of retweet
      */
     public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet){
         // creates agents, tries to interweave them
