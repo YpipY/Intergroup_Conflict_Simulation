@@ -1,10 +1,9 @@
-setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation")
+setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation/data")
 library(ggplot2)
 
 v <- read.csv2("test.csv2")
 
 
-time <-c(1:400)
 person <- (as.factor(rep(1, 101)))
 data1 <- data.frame(v[,"tweetCountPerson1"],v[,"democratAggression"],person)
 person <- (as.factor(rep(2, 101)))

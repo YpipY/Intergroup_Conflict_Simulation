@@ -4,6 +4,9 @@
 public class Agent{
     private boolean dem; // is agent a democrat, true = democrat, false = republican
     private int agg; // aggression of agent [1-100]
+    private int def; // defence modifier on aggression
+    private int t; // likelihood of democrats deciding to tweet
+    private double net; // connectedness of democrats, increases likelihood of retweet. Multiplier
     private World w; // the world the agents are operating in
     private int twitting; // how long has the agent spend twitting, 0 if is not currently twitting
     private Agent partner; // another agent that this agent is having a conversion with, null of not having a conversation
@@ -15,9 +18,12 @@ public class Agent{
      * @param agg Aggression [0-100]
      * @param w The world the agent is operating in
      */
-    public Agent(boolean dem, int agg, World w){
+    public Agent(boolean dem, int agg, int def, int t, double net, World w){
         this.dem = dem;
         this.agg = agg;
+        this.def = def;
+        this.t = t;
+        this.net = net;
         this.w = w;
         this.twitting = 0;
         this.tweetP = dem;
@@ -25,6 +31,9 @@ public class Agent{
 
     // Getter methods
     public boolean getDem(){return (dem);}
+    public int getDef() {return def;}
+    public int getT() {return t;}
+    public double getNet() {return net;}
     public World getW(){return (w);}
     public int getTwitting(){return (twitting);}
     public Agent getPartner(){return (partner);}

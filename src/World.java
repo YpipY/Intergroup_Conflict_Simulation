@@ -18,17 +18,17 @@ public class World {
      * @param demAgg democrat aggression [0-100]
      * @param repAgg republican aggression [0-100]
      */
-    public World(int turns, int nDems, int nReps, int demAgg , int repAgg){
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet){
         // creates agents, tries to interweave them
         for(int i = 0; i < nDems; i++){
-            agents.add(new SimpleModel(true, demAgg, this));
+            agents.add(new SimpleModel(true, demAgg, demDef, demT, demnet, this));
             if (nReps > 0){
-                agents.add(new SimpleModel(false, repAgg , this));
+                agents.add(new SimpleModel(false, repAgg, repDef, repT, repnet, this));
                 nReps--;
             }
         }
         for(int i = 0; i < nReps; i++){
-            agents.add(new SimpleModel(false, repAgg, this));
+            agents.add(new SimpleModel(false, repAgg, repDef, repT, repnet, this));
         }
 
         // run the simulation
@@ -50,6 +50,7 @@ public class World {
 
     // Getter methods
     public int getRamdom(){return (random.nextInt(100)+1);}
+    public int getRamdomLarge(){return (random.nextInt(10000)+1);}
     public int getTotalp1(){
         int tweetn = 0;
         for(Integer tweets: tweetsp1){

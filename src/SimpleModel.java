@@ -7,9 +7,7 @@ public class SimpleModel extends Agent{
      * @param agg Aggression [0-100]
      * @param w The world the agent is operating in
      */
-    public SimpleModel(boolean dem, int agg, World w){
-        super(dem, agg, w);
-    }
+    public SimpleModel(boolean dem, int agg, int def, int t, double net, World w) { super(dem, agg, def, t, net, w); }
 
     /**
      *  Simple implementation of decision-making
@@ -23,6 +21,7 @@ public class SimpleModel extends Agent{
             super.changeTwitting(-10);
             return (1);
         }
+
         // if already twitting then continue to tweet or if partner is already twitting (then it as already decided to start twitting this turn)
         if (super.getTwitting() > 0 || (super.getPartner() != null && super.getPartner().getTwitting() > 0)){
             super.changeTwitting(1);
@@ -54,8 +53,8 @@ public class SimpleModel extends Agent{
             return (0);
         }
 
-        // for now if an agent is not making a tweet then there is a 20 percent chance they will start making one about its candidate
-        if (20 >= super.getW().getRamdom()){
+        // for now if an agent is not making a tweet then there is a percent chance (given by the t value) they will start making one about its candidate
+        if (super.getT() >= super.getW().getRamdomLarge()){
             super.changeTwitting(1);
             super.setTweetP(super.getDem());
             // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
@@ -63,7 +62,7 @@ public class SimpleModel extends Agent{
                 super.setPartner(super.getW().getFighter(super.getDem()));
                 if (super.getPartner() != null){
                     // check of the partner responds and starts a conversation
-                    if (super.getPartner().fight(20)){
+                    if (super.getPartner().fight(super.getPartner().getDef())){
                         super.getPartner().setPartner(this);
                         super.getPartner().setTweetP(super.getDem()); // assumes the conversation is going to be about the candidate of the agent that started the conversation
                     } else { // if partner declines to respond
@@ -76,15 +75,17 @@ public class SimpleModel extends Agent{
         }
 
         // retweet behavior (I know this can be done in a single if statement). Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet
-        if (super.getW().getTotalp1()+super.getW().getTotalp2() != 0 && super.getW().getTotalp1()/(super.getW().getTotalp1()+super.getW().getTotalp2()) >= super.getW().getRamdom() && super.getDem()){
-            super.changeTwitting(1);
-            super.setTweetP(super.getDem());
-            return (0);
-        }
-        if (super.getW().getTotalp1()+super.getW().getTotalp2() != 0 && super.getW().getTotalp2()/(super.getW().getTotalp1()+super.getW().getTotalp2()) >= super.getW().getRamdom() && !super.getDem()){
-            super.changeTwitting(1);
-            super.setTweetP(super.getDem());
-            return (0);
+        if (super.getT() >= super.getW().getRamdomLarge()) {
+            if (super.getW().getTotalp1() + super.getW().getTotalp2() != 0 && (super.getNet() * super.getW().getTotalp1()) / (super.getNet() * super.getW().getTotalp1() + super.getW().getTotalp2()) >= super.getW().getRamdom() && super.getDem()) {
+                super.changeTwitting(1);
+                super.setTweetP(super.getDem());
+                return (0);
+            }
+            if (super.getW().getTotalp1() + super.getW().getTotalp2() != 0 && (super.getNet() * super.getW().getTotalp2()) / (super.getW().getTotalp1() + super.getNet() * super.getW().getTotalp2()) >= super.getW().getRamdom() && !super.getDem()) {
+                super.changeTwitting(1);
+                super.setTweetP(super.getDem());
+                return (0);
+            }
         }
         return (0);
     }
