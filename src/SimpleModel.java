@@ -4,11 +4,11 @@ public class SimpleModel extends Agent{
     /**
      * Constructor
      * @param dem If tune then agent is a democrat, if false then republican
-     * @param agg Aggression, between 0 and 100
-     * @param res Resource, gained and lost by tweeting
+     * @param agg Aggression [0-100]
+     * @param w The world the agent is operating in
      */
-    public SimpleModel(boolean dem, int agg, int res, World w){
-        super(dem, agg, res, w);
+    public SimpleModel(boolean dem, int agg, World w){
+        super(dem, agg, w);
     }
 
     /**
@@ -55,7 +55,7 @@ public class SimpleModel extends Agent{
         }
 
         // for now if an agent is not making a tweet then there is a 20 percent chance they will start making one about its candidate
-        if (20 >= super.getRamdom()){
+        if (20 >= super.getW().getRamdom()){
             super.changeTwitting(1);
             super.setTweetP(super.getDem());
             // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
@@ -76,12 +76,12 @@ public class SimpleModel extends Agent{
         }
 
         // retweet behavior (I know this can be done in a single if statement). Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet
-        if (super.getW().getSumDem()+super.getW().getSumRep() != 0 && super.getW().getSumDem()/(super.getW().getSumDem()+super.getW().getSumRep()) >= super.getRamdom() && super.getDem()){
+        if (super.getW().getTotalp1()+super.getW().getTotalp2() != 0 && super.getW().getTotalp1()/(super.getW().getTotalp1()+super.getW().getTotalp2()) >= super.getW().getRamdom() && super.getDem()){
             super.changeTwitting(1);
             super.setTweetP(super.getDem());
             return (0);
         }
-        if (super.getW().getSumDem()+super.getW().getSumRep() != 0 && super.getW().getSumRep()/(super.getW().getSumDem()+super.getW().getSumRep()) >= super.getRamdom() && !super.getDem()){
+        if (super.getW().getTotalp1()+super.getW().getTotalp2() != 0 && super.getW().getTotalp2()/(super.getW().getTotalp1()+super.getW().getTotalp2()) >= super.getW().getRamdom() && !super.getDem()){
             super.changeTwitting(1);
             super.setTweetP(super.getDem());
             return (0);

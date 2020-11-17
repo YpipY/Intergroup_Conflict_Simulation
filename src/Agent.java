@@ -1,48 +1,34 @@
-import static java.lang.Math.*;
-import java.util.Random;
 /**
-* Class of the agents
+* Class of the agents, implementation of the decision-making model (makeTweet()) is done in its subclasses
 */
 public class Agent{
-    private Random random = new Random();
-    private boolean dem;
-    private int agg;
-    private int res;
-    private World w;
-    private int twitting;
-    private Agent partner;
-    private boolean tweetP;
+    private boolean dem; // is agent a democrat, true = democrat, false = republican
+    private int agg; // aggression of agent [1-100]
+    private World w; // the world the agents are operating in
+    private int twitting; // how long has the agent spend twitting, 0 if is not currently twitting
+    private Agent partner; // another agent that this agent is having a conversion with, null of not having a conversation
+    private boolean tweetP; // what candidate is the agent twitting about, true = democrat, false = republican
 
     /**
      * Constructor
      * @param dem If tune then agent is a democrat, if false then republican
+     * @param agg Aggression [0-100]
+     * @param w The world the agent is operating in
      */
-    public Agent(boolean dem, int agg, int res, World w){
+    public Agent(boolean dem, int agg, World w){
         this.dem = dem;
         this.agg = agg;
-        this.res = res;
         this.w = w;
         this.twitting = 0;
-        this.tweetP = true;
+        this.tweetP = dem;
     }
 
     // Getter methods
     public boolean getDem(){return (dem);}
-    public int getAgg(){return (agg);}
-    public int getRes(){return (res);}
     public World getW(){return (w);}
-    public int getRamdom(){return (random.nextInt(100)+1);}
     public int getTwitting(){return (twitting);}
     public Agent getPartner(){return (partner);}
     public boolean getTweetP(){return (tweetP);}
-
-    /**
-     * Change agents resource by res
-     * @param res Amount to increase by
-     **/
-    public void changeRes(int res){
-        this.res = this.res + res;
-    }
 
     /**
      * Change the twitting value (seconds spend twitting)
@@ -69,25 +55,21 @@ public class Agent{
     }
 
     /**
-     * Decide if wants agent fights
+     * Decide if agent wants to fights (have a conversation)
+     * @param x the amount to increase the likelihood of fighting with
      * @return True if agents wants fights
      **/
     public boolean fight(int x){
-        if (agg + x >= getRamdom()){
-            return(true);
-        } else{
-            return(false);
-        }
+        return agg + x >= w.getRamdom();
     }
 
     /**
      * Main decision function
      * Dummy version, implementation in sub classes
+     * @param x which candidate is currently speaking
      * @return 1 if the actor decided to tweet, 0 if not
      */
     public int makeTweet (boolean x){
-
         return (0);
     }
 }
-

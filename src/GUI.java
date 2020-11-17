@@ -3,10 +3,14 @@ import java.awt.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
+
+/**
+ * Class for the GUI popup, input and file output
+ */
 
 public class GUI {
     private boolean error = false; // for caching errors in options selection
-    private World world; // the world which will run the simulations
 
     // ArrayList for storing results
     private ArrayList<Integer> tweetsp1 = new ArrayList<>();
@@ -18,9 +22,11 @@ public class GUI {
     private ArrayList<Integer> repAggfull = new ArrayList<>();
 
     /**
-     * Constructor of the GUI option selection popup
+     * Constructor of the GUI class
      */
     public GUI() {
+        World world; // the world which will run the simulations
+
         // setup of text box and its fields
         JFrame frame = new JFrame();
         JPanel pane = new JPanel();
@@ -30,9 +36,6 @@ public class GUI {
         JTextField input2 = new JTextField("20"); // aggression of democrats
         JTextField input3 = new JTextField("100"); // number of republicans
         JTextField input4 = new JTextField("20"); // aggression of republicans
-        //JTextField input5 = new JTextField(5);
-        //JTextField input6 = new JTextField(5);
-        //JTextField input7 = new JTextField(5);
 
         // text box layout
         pane.setLayout(new GridLayout(0, 2));
@@ -59,23 +62,6 @@ public class GUI {
         JComboBox<String> combobox1 = new JComboBox<>(simoptions);
         pane.add(combobox1);
 
-        // Early model mostly focus on traditional models of animal conflict, might use later so are still in the code but are not used
-        /*
-        pane.add(new JLabel("Cost of tweet/corporation:"));
-        pane.add(input5);
-
-        pane.add(new JLabel("Cost of argument/fight:"));
-        pane.add(input6);
-
-        pane.add(new JLabel("Payoff for winning a round (Given to each agent in the winning group):"));
-        pane.add(input7);
-        */
-
-        // default values
-        int cCost = 0;
-        int dCost = 0;
-        int payoff = 0;
-
         // drawing the options menu
         int options = JOptionPane.showConfirmDialog(frame, pane, "Select Options", JOptionPane.OK_CANCEL_OPTION);
 
@@ -86,12 +72,6 @@ public class GUI {
         int demAgg = this.parseInt(input2.getText());
         int repAgg = this.parseInt(input4.getText());
 
-        /*
-        int cCost = Integer.parseInt(input5.getText());
-        int dCost = Integer.parseInt(input6.getText());
-        int payoff = Integer.parseInt(input7.getText());
-        */
-
         // checking for an invalid input, if so the option selection is started from the beginning again
         if (error) {
             JOptionPane.showMessageDialog(frame, "The values must be numeric");
@@ -101,11 +81,11 @@ public class GUI {
             new GUI();
             // only the input is valid and ok was selected will the simulation start
         } else if (options == 0) {
-            String simSelected = combobox1.getSelectedItem().toString();
+            String simSelected = Objects.requireNonNull(combobox1.getSelectedItem()).toString();
             // will see what value if any should be varied
             switch (simSelected) {
                 case "None":
-                    world = new World(turns, nDems, nReps, demAgg, repAgg, cCost, dCost, payoff);
+                    world = new World(turns, nDems, nReps, demAgg, repAgg);
                     tweetsp1.add(world.getTotalp1());
                     tweetsp2.add(world.getTotalp2());
                     turnsfull.add(turns);
@@ -117,7 +97,7 @@ public class GUI {
                     break;
                 case "Democrats aggression":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, i, repAgg, cCost, dCost, payoff);
+                        world = new World(turns, nDems, nReps, i, repAgg);
                         tweetsp1.add(world.getTotalp1());
                         tweetsp2.add(world.getTotalp2());
                         turnsfull.add(turns);
@@ -129,7 +109,7 @@ public class GUI {
                     break;
                 case "Republicans aggression":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, i, cCost, dCost, payoff);
+                        world = new World(turns, nDems, nReps, demAgg, i);
                         tweetsp1.add(world.getTotalp1());
                         tweetsp2.add(world.getTotalp2());
                         turnsfull.add(turns);

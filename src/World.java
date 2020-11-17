@@ -1,5 +1,3 @@
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -7,74 +5,51 @@ import java.util.*;
  */
 
 public class World {
-    private ArrayList<Integer> tweetsp1 = new ArrayList<>();
-    private ArrayList<Integer> tweetsp2 = new ArrayList<>();
-    private ArrayList<Agent> agents = new ArrayList<>();
-    private Random random = new Random();
-    private int demWin = 0;
-    private int repWin = 0;
-    private int cCost = 0;
-    private int dCost = 0;
-    private int payoff = 0;
-    private int sumDem = 0;
-    private int sumRep = 0;
+    private ArrayList<Integer> tweetsp1 = new ArrayList<>(); // for storing running tally of tweets
+    private ArrayList<Integer> tweetsp2 = new ArrayList<>(); // for storing running tally of tweets
+    private ArrayList<Agent> agents = new ArrayList<>(); // for storing the agents
+    private Random random = new Random(); // Random object for random number generation
 
     /**
      * Constructor
      * @param turns number of tunes of the simulation to run
+     * @param nDems number of democrat agents
+     * @param nReps number of republican agents
+     * @param demAgg democrat aggression [0-100]
+     * @param repAgg republican aggression [0-100]
      */
-    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int cCost, int dCost, int payoff){
-        // creates agents
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg){
+        // creates agents, tries to interweave them
         for(int i = 0; i < nDems; i++){
-            agents.add(new SimpleModel(true, demAgg, 0, this));
+            agents.add(new SimpleModel(true, demAgg, this));
             if (nReps > 0){
-                agents.add(new SimpleModel(false, repAgg, 0, this));
+                agents.add(new SimpleModel(false, repAgg , this));
                 nReps--;
             }
         }
-
         for(int i = 0; i < nReps; i++){
-            agents.add(new SimpleModel(false, repAgg, 0, this));
+            agents.add(new SimpleModel(false, repAgg, this));
         }
 
         // run the simulation
         int speakertime = 0;
-        int speaker = 1;
+        boolean speaker = true;
         for(int i = 0; i < turns; i++){
             doTurn(speaker);
             speakertime++;
             if (speakertime > 10){
-                if (speaker == 1){
-                    speaker = 2;
-                } else {
-                    speaker = 1;
-                }
+                speaker = !speaker;
                 speakertime = 0;
             }
         }
-        /*
-        for(Agent a : agents){
-            if (a.getDem()){
-                sumDem = sumDem + a.getRes();
-            } else{
-                sumRep = sumRep + a.getRes();
-            }
-        }
-         */
 
-        // output varies running totals, mostly for debugging purpose
-        System.out.println( "Sum Democrats: " + sumDem);
-        System.out.println( "Sum Republicans: " + sumRep);
-        //System.out.println( demWin);
-        //System.out.println( repWin);
-        //output();
+        // output simulation by simulation totals, mostly for debugging purposes
+        System.out.println( "Sum Democrats: " + getTotalp1());
+        System.out.println( "Sum Republicans: " + getTotalp2());
     }
 
     // Getter methods
-    public int getcCost(){return(cCost);}
-    public int getdCost(){return(dCost);}
-    public int getSumDem(){return(sumDem);}
-    public int getSumRep(){return(sumRep);}
+    public int getRamdom(){return (random.nextInt(100)+1);}
     public int getTotalp1(){
         int tweetn = 0;
         for(Integer tweets: tweetsp1){
@@ -91,8 +66,9 @@ public class World {
     }
 
     /**
-     * Returns an agent of opposite partisanship, that is not currently twitting and does not have a parter already. Null if one cannot be found
+     * Returns an agent of opposite partisanship, that is not currently twitting and does not have a partner already. Null if one cannot be found
      * @param dem If tune then agent is a democrat, if false then republican
+     * @return Agent of opposite partisanship
      **/
     public Agent getFighter(boolean dem){
         Agent agent = null;
@@ -119,39 +95,23 @@ public class World {
 
     /**
      * Advance one turn and make the actors decide if they are going to tweet
-     * @param speaker 1 of democrat candidate is speaking, 2 if republican
+     * @param speaker true if democrat candidate is speaking, false if republican
      */
-    private void doTurn(int speaker){
+    private void doTurn(boolean speaker){
         int tweetcountdem = 0;
         int tweetcountrep = 0;
         for(Agent a : agents){
             if (a.getTweetP()) {
-                tweetcountdem = tweetcountdem + a.makeTweet(true);
+                tweetcountdem = tweetcountdem + a.makeTweet(speaker);
             } else{
-                tweetcountrep = tweetcountrep + a.makeTweet(true);
+                tweetcountrep = tweetcountrep + a.makeTweet(speaker);
             }
         }
-        sumDem = tweetcountdem + sumDem;
-        sumRep = tweetcountrep + sumRep;
 
+        // output turn by turn totals, mostly for debugging purposes
         //System.out.println("dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
-        /*
-        if (tweetcountdem > tweetcountrep){
-            demWin++;
-            for(Agent a : agents) {
-                if (a.getDem()) {
-                    a.changeRes(payoff);
-                }
-            }
-        } else if(tweetcountdem < tweetcountrep){
-            repWin++;
-            for(Agent a : agents) {
-                if (!a.getDem()) {
-                    a.changeRes(payoff);
-                }
-            }
-        }
-        */
+
+        // adding the new total of tweets
         tweetsp1.add(tweetcountdem);
         tweetsp2.add(tweetcountrep);
     }
