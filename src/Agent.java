@@ -72,8 +72,8 @@ public class Agent{
      * Decide if wants agent fights
      * @return True if agents wants fights
      **/
-    public boolean fight(){
-        if (agg >= getRamdom()){
+    public boolean fight(int x){
+        if (agg + x >= getRamdom()){
             return(true);
         } else{
             return(false);
@@ -86,17 +86,7 @@ public class Agent{
      * @return 1 if the actor decided to tweet, 0 if not
      */
     public int makeTweet (boolean x){
-        // basic function
-        //int p = (int) (1000000*(1/(1+exp(-k*x))));
-        //int test = random.nextInt(100)+1;
-        //System.out.println(100*(1/(1+exp(-k*x))));
-        //System.out.println(p);
 
-        //if (30 >= random.nextInt(100)+1 ){
-        //    return(1);
-        //} else {
-        //    return(0);
-        //}
         return (0);
     }
 }

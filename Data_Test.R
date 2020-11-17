@@ -2,18 +2,21 @@ setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation")
 library(ggplot2)
 
 v <- read.csv2("test.csv2")
+
+
 time <-c(1:400)
-person <- (as.factor(rep(1, 400)))
-data1 <- data.frame(v[,"tweetCountPerson1"],time,person)
-person <- (as.factor(rep(2, 400)))
-data2 <- data.frame(v[,"tweetCountPerson2"],time,person)
+person <- (as.factor(rep(1, 101)))
+data1 <- data.frame(v[,"tweetCountPerson1"],v[,"democratAggression"],person)
+person <- (as.factor(rep(2, 101)))
+data2 <- data.frame(v[,"tweetCountPerson2"],v[,"democratAggression"],person)
 
 colnames(data1)[1] <- "tweetCount"
 colnames(data2)[1] <- "tweetCount"
 
 data <- rbind(data1, data2)
+colnames(data)[2] <- "democratAggression"
 
-ggplot(data, aes(time,tweetCount))+
+ggplot(data, aes(democratAggression,tweetCount))+
   geom_point(aes(colour = factor(person)))
 
 plot(data[,"time"],data[,"tweetCount"])

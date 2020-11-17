@@ -62,19 +62,33 @@ public class World {
         }
          */
 
+        // output varies running totals, mostly for debugging purpose
         System.out.println( "Sum Democrats: " + sumDem);
         System.out.println( "Sum Republicans: " + sumRep);
         //System.out.println( demWin);
         //System.out.println( repWin);
         //output();
-        System.exit(1);
     }
 
     // Getter methods
-    public int getcCost(){return(cCost);};
-    public int getdCost(){return(dCost);};
-    public int getSumDem(){return(sumDem);};
-    public int getSumRep(){return(sumRep);};
+    public int getcCost(){return(cCost);}
+    public int getdCost(){return(dCost);}
+    public int getSumDem(){return(sumDem);}
+    public int getSumRep(){return(sumRep);}
+    public int getTotalp1(){
+        int tweetn = 0;
+        for(Integer tweets: tweetsp1){
+            tweetn = tweets + tweetn;
+        }
+        return (tweetn);
+    }
+    public int getTotalp2(){
+        int tweetn = 0;
+        for(Integer tweets: tweetsp2){
+            tweetn = tweets + tweetn;
+        }
+        return (tweetn);
+    }
 
     /**
      * Returns an agent of opposite partisanship, that is not currently twitting and does not have a parter already. Null if one cannot be found
@@ -120,7 +134,7 @@ public class World {
         sumDem = tweetcountdem + sumDem;
         sumRep = tweetcountrep + sumRep;
 
-        System.out.println("dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
+        //System.out.println("dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
         /*
         if (tweetcountdem > tweetcountrep){
             demWin++;
@@ -140,31 +154,5 @@ public class World {
         */
         tweetsp1.add(tweetcountdem);
         tweetsp2.add(tweetcountrep);
-    }
-
-    /**
-     * Output the data of the simulation in a .csv file
-     */
-    private void output() {
-        try {
-            FileWriter writer = new FileWriter("test.csv2");
-            writer.write("tweetCountPerson1");
-            writer.write(';');
-            writer.write("tweetCountPerson2");
-            writer.write('\n');
-            for (int i = 0; i < tweetsp1.size(); i++) {
-                writer.write(tweetsp1.get(i).toString());
-                writer.write(';');
-                writer.write(tweetsp2.get(i).toString());
-                writer.write('\n');
-            }
-            //for (Integer t : tweetsp1) {
-            //    writer.write(t.toString());
-            //    writer.write('\n');
-            //}
-            writer.close();
-        } catch (IOException e) {
-            // Oh god please no!
-        }
     }
 }
