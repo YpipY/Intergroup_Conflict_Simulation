@@ -71,10 +71,10 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("Democrats defence modifier added to aggression in case of defence:"));
         pane.add(input6);
 
-        pane.add(new JLabel("Likelihood of democrats deciding to tweet:"));
+        pane.add(new JLabel("Likelihood of democrats deciding to tweet [0-10000]:"));
         pane.add(input8);
 
-        pane.add(new JLabel("connectedness of democrats, increases likelihood of retweet. Multiplier:"));
+        pane.add(new JLabel("<html> Connectedness of democrats, increases likelihood of retweet <br> 1: no polarization, > 1 more polarized:</html>"));
         pane.add(input10);
 
         pane.add(new JLabel("Number of Republicans:"));
@@ -86,10 +86,10 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("Republicans defence modifier added to aggression in case of defence:"));
         pane.add(input7);
 
-        pane.add(new JLabel("Likelihood of republicans deciding to tweet:"));
+        pane.add(new JLabel("Likelihood of republicans deciding to tweet [0-10000]:"));
         pane.add(input9);
 
-        pane.add(new JLabel("connectedness of republicans, increases likelihood of retweet. Multiplier:"));
+        pane.add(new JLabel("<html> Connectedness of republicans, increases likelihood  of retweet <br> 1: no polarization, > 1 more polarized:</html>"));
         pane.add(input11);
 
         // drop down menu for the automated simulations
@@ -196,8 +196,9 @@ public class GUI implements ActionListener {
                         repnetfull.add(repnet);
                         retweetsfull.add(world.getRetweets());
                         normaltweetsfull.add(world.getNormalTweets());
-                        lable1.setText("Simulation progress: " + (i / 101 * 100) + "%");
+                        lable1.setText("Simulation progress: " + ((i* 100) / 101) + "%");
                         con.repaint();
+                        System.out.println(((i / 101) * 100));
                     }
                     break;
                 case "Democrats defence modifier":
@@ -218,7 +219,7 @@ public class GUI implements ActionListener {
                         repnetfull.add(repnet);
                         retweetsfull.add(world.getRetweets());
                         normaltweetsfull.add(world.getNormalTweets());
-                        lable1.setText("Simulation progress: " + (i / 101 * 100) + "%");
+                        lable1.setText("Simulation progress: " + ((i* 100) / 101) + "%");
                         con.repaint();
                     }
                     break;
@@ -240,7 +241,7 @@ public class GUI implements ActionListener {
                         repnetfull.add(repnet);
                         retweetsfull.add(world.getRetweets());
                         normaltweetsfull.add(world.getNormalTweets());
-                        lable1.setText("Simulation progress: " + (i / 101 * 100) + "%");
+                        lable1.setText("Simulation progress: " + ((i* 100) / 101) + "%");
                         con.repaint();
                     }
                     break;
