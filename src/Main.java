@@ -1,10 +1,11 @@
 // Agent Based Model simulator for simulating twitter mentions
 // Author: Simon Moeller Nielsen
-// Date: 17/11 2020
+// Date: 18/11 2020
 
 /**
  * Main class. Only for initial setup
  */
+
 public class Main {
     public static void main(String[] args){
         new GUI();

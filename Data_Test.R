@@ -1,7 +1,7 @@
 setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation/data")
 library(ggplot2)
 
-v <- read.csv2("test.csv2")
+v <- read.csv2("test4.csv2")
 
 
 person <- (as.factor(rep(1, 101)))
@@ -20,9 +20,18 @@ ggplot(data, aes(democratAggression,tweetCount))+
 
 plot(data[,"time"],data[,"tweetCount"])
 
+
+sum(data$tweetCount)
+
 eq = function(x){1/(1+exp(-x))}
 (1/(1+exp(-4)))*100
+27255/10000
+27255/200
 
+140000/10000
+140000/200
+
+10000/10
 1/(1+exp(5))
 0.01798621*100
 

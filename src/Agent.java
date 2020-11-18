@@ -1,6 +1,7 @@
 /**
 * Class of the agents, implementation of the decision-making model (makeTweet()) is done in its subclasses
 */
+
 public class Agent{
     private boolean dem; // is agent a democrat, true = democrat, false = republican
     private int agg; // aggression of agent [1-100]
@@ -11,6 +12,7 @@ public class Agent{
     private int twitting; // how long has the agent spend twitting, 0 if is not currently twitting
     private Agent partner; // another agent that this agent is having a conversion with, null of not having a conversation
     private boolean tweetP; // what candidate is the agent twitting about, true = democrat, false = republican
+    private boolean whattweet; // What kind of tweet. True = normal tweet, false = retweet
 
     /**
      * Constructor
@@ -30,6 +32,7 @@ public class Agent{
         this.w = w;
         this.twitting = 0;
         this.tweetP = dem;
+        this.tweetP = true;
     }
 
     // Getter methods
@@ -41,6 +44,7 @@ public class Agent{
     public int getTwitting(){return (twitting);}
     public Agent getPartner(){return (partner);}
     public boolean getTweetP(){return (tweetP);}
+    public boolean getWhatTweet(){return (whattweet);}
 
     /**
      * Change the twitting value (seconds spend twitting)
@@ -64,6 +68,14 @@ public class Agent{
      **/
     public void setTweetP(boolean tweetP){
         this.tweetP = tweetP;
+    }
+
+    /**
+     * Change tweetP
+     * @param whattweet True if agent is currently tweeting a normal tweet, false if retweet
+     **/
+    public void setWhatTweet(boolean whattweet){
+        this.whattweet = whattweet;
     }
 
     /**

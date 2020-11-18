@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +11,7 @@ import java.util.Objects;
  * Class for the GUI popup, input and file output
  */
 
-public class GUI {
+public class GUI implements ActionListener {
     private boolean interror = false; // for caching errors in options selection for int
     private boolean doubleerror = false; // for caching errors in options selection for double
     private JFrame frame = new JFrame(); // frame for the GUI
@@ -29,6 +31,8 @@ public class GUI {
     private ArrayList<Integer> reptfull = new ArrayList<>();
     private ArrayList<Double> demnetfull = new ArrayList<>();
     private ArrayList<Double> repnetfull = new ArrayList<>();
+    private ArrayList<Integer> retweetsfull = new ArrayList<>();
+    private ArrayList<Integer> normaltweetsfull = new ArrayList<>();
 
     /**
      * Constructor of the GUI class
@@ -90,7 +94,7 @@ public class GUI {
 
         // drop down menu for the automated simulations
         pane.add(new JLabel("<html> Automated simulations. Will vary in increments <br> of 1 this value while keep all others as specified:</html>"));
-        String[] simoptions = {"None", "Democrats aggression", "Republicans aggression"};
+        String[] simoptions = {"None", "Democrats aggression", "Democrats defence modifier", "Democrats likelihood of tweeting", "Connectedness of democrat network"};
         JComboBox<String> combobox1 = new JComboBox<>(simoptions);
         pane.add(combobox1);
 
@@ -118,7 +122,7 @@ public class GUI {
         if (interror) {
             JOptionPane.showMessageDialog(frame, "The values without .00 in the default value must be a whole number");
             new GUI();
-        } else if (doubleerror){
+        } else if (doubleerror) {
             JOptionPane.showMessageDialog(frame, "The values must be numeric");
             new GUI();
         } else if (100 < demAgg || 0 > demAgg || 100 < repAgg || 0 > repAgg) {
@@ -126,13 +130,38 @@ public class GUI {
             new GUI();
             // only the input is valid and ok was selected will the simulation start
         } else if (options == 0) {
-            String simSelected = Objects.requireNonNull(combobox1.getSelectedItem()).toString();
+
+            // for the GUI while the simulations are running
+            JFrame frame2 = new JFrame("Simulations are running");
+            frame2.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            frame2.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                    if (JOptionPane.showConfirmDialog(frame,
+                            "Are you sure you want to stop simulations?", "Stop simulations?",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+                        System.exit(1);
+                    }
+                }
+            });
+            Container con = frame2.getContentPane();
+            con.setLayout(new FlowLayout());
+            JLabel lable1 = new JLabel("Simulation progress:" + "0%");
+            con.add(lable1);
+            frame2.setSize(300, 200);
+            frame2.setVisible(true);
+
+            // Timer for seeing how long the simulations run
+            long start = System.nanoTime();
+
             // will see what value if any should be varied
+            String simSelected = Objects.requireNonNull(combobox1.getSelectedItem()).toString();
             switch (simSelected) {
                 case "None":
                     world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet);
-                    tweetsp1.add(world.getTotalp1());
-                    tweetsp2.add(world.getTotalp2());
+                    tweetsp1.add(world.getTweetCountDemTotal());
+                    tweetsp2.add(world.getTweetCountRepTotal());
                     turnsfull.add(turns);
                     nDemsfull.add(nDems);
                     nRepsfull.add(nReps);
@@ -144,12 +173,16 @@ public class GUI {
                     reptfull.add(rept);
                     demnetfull.add(demnet);
                     repnetfull.add(repnet);
+                    retweetsfull.add(world.getRetweets());
+                    normaltweetsfull.add(world.getNormalTweets());
+                    lable1.setText("Simulation progress: " + "100%");
+                    con.repaint();
                     break;
                 case "Democrats aggression":
                     for (int i = 0; i < 101; i++) {
                         world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet);
-                        tweetsp1.add(world.getTotalp1());
-                        tweetsp2.add(world.getTotalp2());
+                        tweetsp1.add(world.getTweetCountDemTotal());
+                        tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
                         nDemsfull.add(nDems);
                         nRepsfull.add(nReps);
@@ -161,29 +194,82 @@ public class GUI {
                         reptfull.add(rept);
                         demnetfull.add(demnet);
                         repnetfull.add(repnet);
+                        retweetsfull.add(world.getRetweets());
+                        normaltweetsfull.add(world.getNormalTweets());
+                        lable1.setText("Simulation progress: " + (i / 101 * 100) + "%");
+                        con.repaint();
                     }
                     break;
-                case "Republicans aggression":
+                case "Democrats defence modifier":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, i, demdef, repdef, demt, rept, demnet, repnet);
-                        tweetsp1.add(world.getTotalp1());
-                        tweetsp2.add(world.getTotalp2());
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet);
+                        tweetsp1.add(world.getTweetCountDemTotal());
+                        tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
                         nDemsfull.add(nDems);
                         nRepsfull.add(nReps);
                         demAggfull.add(demAgg);
-                        repAggfull.add(i);
-                        demDeffull.add(demdef);
+                        repAggfull.add(repAgg);
+                        demDeffull.add(i);
                         repDeffull.add(repdef);
                         demtfull.add(demt);
                         reptfull.add(rept);
                         demnetfull.add(demnet);
                         repnetfull.add(repnet);
+                        retweetsfull.add(world.getRetweets());
+                        normaltweetsfull.add(world.getNormalTweets());
+                        lable1.setText("Simulation progress: " + (i / 101 * 100) + "%");
+                        con.repaint();
+                    }
+                    break;
+                case "Democrats likelihood of tweeting":
+                    for (int i = 0; i < 101; i++) {
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet);
+                        tweetsp1.add(world.getTweetCountDemTotal());
+                        tweetsp2.add(world.getTweetCountRepTotal());
+                        turnsfull.add(turns);
+                        nDemsfull.add(nDems);
+                        nRepsfull.add(nReps);
+                        demAggfull.add(demAgg);
+                        repAggfull.add(repAgg);
+                        demDeffull.add(demdef);
+                        repDeffull.add(repdef);
+                        demtfull.add(i);
+                        reptfull.add(rept);
+                        demnetfull.add(demnet);
+                        repnetfull.add(repnet);
+                        retweetsfull.add(world.getRetweets());
+                        normaltweetsfull.add(world.getNormalTweets());
+                        lable1.setText("Simulation progress: " + (i / 101 * 100) + "%");
+                        con.repaint();
+                    }
+                    break;
+                case "Connectedness of democrat network":
+                    for (double i = 0.00; i < 5; i = i + 0.01) {
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet);
+                        tweetsp1.add(world.getTweetCountDemTotal());
+                        tweetsp2.add(world.getTweetCountRepTotal());
+                        turnsfull.add(turns);
+                        nDemsfull.add(nDems);
+                        nRepsfull.add(nReps);
+                        demAggfull.add(demAgg);
+                        repAggfull.add(repAgg);
+                        demDeffull.add(demdef);
+                        repDeffull.add(repdef);
+                        demtfull.add(demt);
+                        reptfull.add(rept);
+                        demnetfull.add(i);
+                        repnetfull.add(repnet);
+                        retweetsfull.add(world.getRetweets());
+                        normaltweetsfull.add(world.getNormalTweets());
+                        lable1.setText("Simulation progress: " + (int) (i / 5 * 100) + "%");
+                        con.repaint();
                     }
                     break;
             }
-            JOptionPane.showMessageDialog(frame, "Simulations done");
+            long stop = System.nanoTime();
             output();
+            JOptionPane.showMessageDialog(frame, "Simulations done. Time elapse: " + (((stop - start) / 1000000000) / 60) + ":" + (((stop - start) / 1000000000) % 60) + " minutes");
         }
         // if cancel or the x was selected the programs closes
         System.exit(1);
@@ -191,6 +277,7 @@ public class GUI {
 
     /**
      * Parses a string to int or catches the exception
+     *
      * @param s String to be parsed
      */
     private int parseInt(String s) {
@@ -204,6 +291,7 @@ public class GUI {
 
     /**
      * Parses a string to double or catches the exception
+     *
      * @param s String to be parsed
      */
     private double parseDouble(String s) {
@@ -247,6 +335,10 @@ public class GUI {
             writer.write("democratNetworkModifier");
             writer.write(';');
             writer.write("republicanNetworkModifier");
+            writer.write(';');
+            writer.write("numberOfRetweets");
+            writer.write(';');
+            writer.write("numberOfNormalTweets");
             writer.write('\n');
             for (int i = 0; i < tweetsp1.size(); i++) {
                 writer.write(tweetsp1.get(i).toString());
@@ -274,6 +366,10 @@ public class GUI {
                 writer.write(demnetfull.get(i).toString());
                 writer.write(';');
                 writer.write(repnetfull.get(i).toString());
+                writer.write(';');
+                writer.write(retweetsfull.get(i).toString());
+                writer.write(';');
+                writer.write(normaltweetsfull.get(i).toString());
                 writer.write('\n');
             }
             writer.close();
@@ -281,5 +377,10 @@ public class GUI {
             // Oh god please no!
             JOptionPane.showMessageDialog(frame, "An error occurred while trying to save the results");
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.exit(1);
     }
 }

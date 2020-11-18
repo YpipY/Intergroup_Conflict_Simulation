@@ -9,6 +9,10 @@ public class World {
     private ArrayList<Integer> tweetsp2 = new ArrayList<>(); // for storing running tally of tweets
     private ArrayList<Agent> agents = new ArrayList<>(); // for storing the agents
     private Random random = new Random(); // Random object for random number generation
+    private int retweets; // counter for the number of retweets. For testing
+    private int normaltweets; // count for the number of normal tweets (non retweets). For testing
+    private int tweetcountdemtotal; // total number of tweets about democrats
+    private int tweetcountreptotal; // total number of tweets about republicans
 
     /**
      * Constructor
@@ -25,6 +29,12 @@ public class World {
      * @param repnet connectedness of republicans, increases likelihood of retweet
      */
     public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet){
+        // initialising the tweet counters
+        retweets = 0;
+        normaltweets = 0;
+        tweetcountdemtotal = 0;
+        tweetcountreptotal = 0;
+
         // creates agents, tries to interweave them
         for(int i = 0; i < nDems; i++){
             agents.add(new SimpleModel(true, demAgg, demDef, demT, demnet, this));
@@ -50,26 +60,32 @@ public class World {
         }
 
         // output simulation by simulation totals, mostly for debugging purposes
-        System.out.println( "Sum Democrats: " + getTotalp1());
-        System.out.println( "Sum Republicans: " + getTotalp2());
+        System.out.println( "Sum Democrats: " + tweetcountdemtotal);
+        System.out.println( "Sum Republicans: " + tweetcountreptotal);
     }
 
     // Getter methods
     public int getRamdom(){return (random.nextInt(100)+1);}
     public int getRamdomLarge(){return (random.nextInt(10000)+1);}
-    public int getTotalp1(){
-        int tweetn = 0;
-        for(Integer tweets: tweetsp1){
-            tweetn = tweets + tweetn;
-        }
-        return (tweetn);
+    public int getRetweets(){return (retweets);}
+    public int getNormalTweets(){return (normaltweets);}
+    public int getTweetCountDemTotal(){ return (tweetcountdemtotal);}
+    public int getTweetCountRepTotal(){ return (tweetcountreptotal);}
+
+    /**
+     * Add to the number of retweets
+     * @param retweets Amount of retweets it should be added
+     **/
+    public void addReteets(int retweets){
+        this.retweets = this.retweets + retweets;
     }
-    public int getTotalp2(){
-        int tweetn = 0;
-        for(Integer tweets: tweetsp2){
-            tweetn = tweets + tweetn;
-        }
-        return (tweetn);
+
+    /**
+     * Add to the number of normaltweets
+     * @param normaltweets Amount of retweets it should be added
+     **/
+    public void addNormalTweets(int normaltweets){
+        this.normaltweets = this.normaltweets + normaltweets;
     }
 
     /**
@@ -121,5 +137,7 @@ public class World {
         // adding the new total of tweets
         tweetsp1.add(tweetcountdem);
         tweetsp2.add(tweetcountrep);
+        tweetcountdemtotal = tweetcountdemtotal + tweetcountdem;
+        tweetcountreptotal = tweetcountreptotal + tweetcountrep;
     }
 }

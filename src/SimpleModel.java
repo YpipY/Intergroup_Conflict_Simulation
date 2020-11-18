@@ -25,6 +25,11 @@ public class SimpleModel extends Agent{
         // if they have spend 10 turns (seconds) making a tweet then it is sent
         if (super.getTwitting() >= 10) {
             super.changeTwitting(-10);
+            if (super.getWhatTweet()){
+                super.getW().addNormalTweets(1);
+            } else{
+                super.getW().addReteets(1);
+            }
             return (1);
         }
 
@@ -63,33 +68,36 @@ public class SimpleModel extends Agent{
         if (super.getT() >= super.getW().getRamdomLarge()){
             super.changeTwitting(1);
             super.setTweetP(super.getDem());
+            super.setWhatTweet(true);
             // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
             if (super.fight(0)){
                 super.setPartner(super.getW().getFighter(super.getDem()));
                 if (super.getPartner() != null){
                     // check of the partner responds and starts a conversation
                     if (super.getPartner().fight(super.getPartner().getDef())){
+                        super.getPartner().setWhatTweet(true);
                         super.getPartner().setPartner(this);
                         super.getPartner().setTweetP(super.getDem()); // assumes the conversation is going to be about the candidate of the agent that started the conversation
                     } else { // if partner declines to respond
                         super.setPartner(null);
                     }
-                    super.changeTwitting(1);
                 }
             }
             return (0);
         }
 
-        // retweet behavior (I know this can be done in a single if statement). Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
-        if (super.getT() >= super.getW().getRamdomLarge()) {
-            if (super.getW().getTotalp1() + super.getW().getTotalp2() != 0 && (super.getNet() * super.getW().getTotalp1()) / (super.getNet() * super.getW().getTotalp1() + super.getW().getTotalp2()) >= super.getW().getRamdom() && super.getDem()) {
+        // retweet behavior. Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
+        if (super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal() != 0 && super.getT() >= super.getW().getRamdomLarge()) {
+            if (super.getDem() && 100*((super.getNet() * super.getW().getTweetCountDemTotal()) / (super.getNet() * super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
                 super.changeTwitting(1);
                 super.setTweetP(super.getDem());
+                super.setWhatTweet(false);
                 return (0);
             }
-            if (super.getW().getTotalp1() + super.getW().getTotalp2() != 0 && (super.getNet() * super.getW().getTotalp2()) / (super.getW().getTotalp1() + super.getNet() * super.getW().getTotalp2()) >= super.getW().getRamdom() && !super.getDem()) {
+            if (!super.getDem() && 100*((super.getNet() * super.getW().getTweetCountRepTotal()) / (super.getW().getTweetCountDemTotal() + super.getNet() * super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
                 super.changeTwitting(1);
                 super.setTweetP(super.getDem());
+                super.setWhatTweet(false);
                 return (0);
             }
         }
