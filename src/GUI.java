@@ -43,7 +43,7 @@ public class GUI implements ActionListener {
         // setup of text box and its fields
         JPanel pane = new JPanel();
         // in quotation is default values
-        JTextField input0 = new JTextField("10000"); //turns
+        JTextField input0 = new JTextField("5400"); //turns. 5400 for full 90 minutes
         JTextField input1 = new JTextField("100"); // number of democrats
         JTextField input2 = new JTextField("20"); // aggression of democrats
         JTextField input3 = new JTextField("100"); // number of republicans
@@ -198,7 +198,6 @@ public class GUI implements ActionListener {
                         normaltweetsfull.add(world.getNormalTweets());
                         lable1.setText("Simulation progress: " + ((i* 100) / 101) + "%");
                         con.repaint();
-                        System.out.println(((i / 101) * 100));
                     }
                     break;
                 case "Democrats defence modifier":

@@ -13,6 +13,11 @@ public class World {
     private int normaltweets; // count for the number of normal tweets (non retweets). For testing
     private int tweetcountdemtotal; // total number of tweets about democrats
     private int tweetcountreptotal; // total number of tweets about republicans
+    private int tweetsfromdemadem; // total number of tweets from democrat agents about democrat
+    private int tweetsfromrepadem; // total number of tweets from republican agents about democrat
+    private int tweetsfromdemarep; // total number of tweets from democrat agents about republican
+    private int tweetsfromreparep; // total number of tweets from republican agents about republican
+    private int turn = 0;
 
     /**
      * Constructor
@@ -34,6 +39,12 @@ public class World {
         normaltweets = 0;
         tweetcountdemtotal = 0;
         tweetcountreptotal = 0;
+        tweetsfromdemadem = 0;
+        tweetsfromrepadem = 0;
+        tweetsfromdemarep = 0;
+        tweetsfromreparep = 0;
+
+
 
         // creates agents, tries to interweave them
         for(int i = 0; i < nDems; i++){
@@ -62,6 +73,16 @@ public class World {
         // output simulation by simulation totals, mostly for debugging purposes
         System.out.println( "Sum Democrats: " + tweetcountdemtotal);
         System.out.println( "Sum Republicans: " + tweetcountreptotal);
+        /*
+        System.out.println(retweets);
+        System.out.println(normaltweets);
+        System.out.println(tweetcountdemtotal);
+        System.out.println(tweetcountreptotal);
+        System.out.println(tweetsfromdemadem);
+        System.out.println(tweetsfromrepadem);
+        System.out.println(tweetsfromdemarep);
+        System.out.println(tweetsfromreparep);
+         */
     }
 
     // Getter methods
@@ -71,6 +92,10 @@ public class World {
     public int getNormalTweets(){return (normaltweets);}
     public int getTweetCountDemTotal(){ return (tweetcountdemtotal);}
     public int getTweetCountRepTotal(){ return (tweetcountreptotal);}
+    public int getTweetsFromDemADem(){ return (tweetsfromdemadem);}
+    public int getTweetsFromRepADem(){ return (tweetsfromrepadem);}
+    public int getTweetsFromDemARep(){ return (tweetsfromdemarep);}
+    public int getTweetsFromRepARep(){ return (tweetsfromreparep);}
 
     /**
      * Add to the number of retweets
@@ -124,15 +149,28 @@ public class World {
         int tweetcountdem = 0;
         int tweetcountrep = 0;
         for(Agent a : agents){
+            int x = a.makeTweet(speaker);
             if (a.getTweetP()) {
-                tweetcountdem = tweetcountdem + a.makeTweet(speaker);
+                tweetcountdem = tweetcountdem + x;
+                if (a.getDem()) {
+                    tweetsfromdemadem = tweetsfromdemadem + x;
+                } else{
+                    tweetsfromrepadem = tweetsfromrepadem + x;
+                }
             } else{
-                tweetcountrep = tweetcountrep + a.makeTweet(speaker);
+                tweetcountrep = tweetcountrep + x;
+                if (a.getDem()) {
+                    tweetsfromdemarep = tweetsfromdemarep + x;
+                } else{
+                    tweetsfromreparep = tweetsfromreparep + x;
+                }
             }
+
         }
 
         // output turn by turn totals, mostly for debugging purposes
-        //System.out.println("dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
+        //turn++;
+        //System.out.println("trun:" + turn  + "dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
 
         // adding the new total of tweets
         tweetsp1.add(tweetcountdem);

@@ -87,16 +87,29 @@ public class SimpleModel extends Agent{
         }
 
         // retweet behavior. Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
+        // First decide if it wants to retweet, if number of total tweets are > 0.
         if (super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal() != 0 && super.getT() >= super.getW().getRamdomLarge()) {
+            // If democrat find out of they find a tweet from same partisanship
             if (super.getDem() && 100*((super.getNet() * super.getW().getTweetCountDemTotal()) / (super.getNet() * super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
+                // Find out if the tweet is going to be about a democrat or republican
+                if (100*(super.getW().getTweetsFromDemADem() / (super.getW().getTweetsFromDemADem() + super.getW().getTweetsFromDemARep())) >= super.getW().getRamdom()){
+                    super.setTweetP(super.getDem());
+                } else {
+                    super.setTweetP(!super.getDem());
+                }
                 super.changeTwitting(1);
-                super.setTweetP(super.getDem());
                 super.setWhatTweet(false);
                 return (0);
             }
+            // If republican find out of they find a tweet from same partisanship
             if (!super.getDem() && 100*((super.getNet() * super.getW().getTweetCountRepTotal()) / (super.getW().getTweetCountDemTotal() + super.getNet() * super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
+                // Find out if the tweet is going to be about a democrat or republican
+                if (100*(super.getW().getTweetsFromRepARep() / (super.getW().getTweetsFromRepARep() + super.getW().getTweetsFromRepADem())) >= super.getW().getRamdom()){
+                    super.setTweetP(super.getDem());
+                } else {
+                    super.setTweetP(!super.getDem());
+                }
                 super.changeTwitting(1);
-                super.setTweetP(super.getDem());
                 super.setWhatTweet(false);
                 return (0);
             }
