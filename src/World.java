@@ -20,6 +20,7 @@ public class World {
     private int tweetsfromrepadem; // total number of tweets from republican agents about democrat
     private int tweetsfromdemarep; // total number of tweets from democrat agents about republican
     private int tweetsfromreparep; // total number of tweets from republican agents about republican
+    private Debate debate; // The debate data object
     private int turn = 0; // turn counter for debugging
 
     /**
@@ -37,6 +38,8 @@ public class World {
      * @param repnet connectedness of republicans, increases likelihood of retweet
      */
     public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb ){
+        debate = new Debate();
+
         // initialising the tweet counters
         retweets = 0;
         normaltweets = 0;
@@ -66,6 +69,9 @@ public class World {
         int speakertime = 0;
         boolean speaker = true;
         for(int i = 0; i < turns; i++){
+            debate.advanceTime(i);
+            debate.getWord();
+            System.out.println(debate.getWord());
             doTurn(speaker);
             speakertime++;
             if (speakertime > 10){

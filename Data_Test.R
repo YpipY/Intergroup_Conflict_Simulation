@@ -1,4 +1,9 @@
 setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation/data")
+
+v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
+
+v <- read.csv("Debate2012_1_tidy.csv")
+
 library(ggplot2)
 
 v <- read.csv2("AggressionTest1.csv2")
@@ -77,7 +82,7 @@ ggplot(data, aes(democratNetworkModifier,tweetCount))+
   scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
   
 
-100267/100000
+140000/100000
 
 sum(data$tweetCount)
 
