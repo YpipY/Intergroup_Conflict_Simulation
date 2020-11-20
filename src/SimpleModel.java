@@ -39,6 +39,118 @@ public class SimpleModel extends Agent{
             return(0);
         }
 
+        // continue current conversation
+        if (continueCon()){
+            return (0);
+        }
+
+        // normal tweet behavior
+        if (super.getW().getNortb()) {
+            if (normalTweet()) {
+                return (0);
+            }
+        }
+
+        // aggressive tweet behavior
+        if (super.getW().getAggtb()) {
+            if (aggTweet()){
+                return (0);
+            }
+        }
+
+        // retweet behavior
+        if (super.getW().getRetb()) {
+            if (retweet()) {
+                return (0);
+            }
+        }
+
+        return (0);
+    }
+
+    /**
+     *  Implementation of normal tweet behavior
+     *  @return true if agent decided to tweet, false if not
+     **/
+    public boolean normalTweet (){
+        // for now if an agent is not making a tweet then there is a percent chance (given by the t value) they will start making one about its candidate
+        if (super.getT() >= super.getW().getRamdomLarge()) {
+            super.changeTwitting(1);
+            super.setTweetP(super.getDem());
+            super.setWhatTweet(true);
+            return (true);
+        }
+        return (false);
+    }
+
+    /**
+     *  Implementation of aggressive tweet behavior
+     *  @return true if agent decided to tweet, false if not
+     **/
+    public boolean aggTweet (){
+        // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
+        if (super.getT() >= super.getW().getRamdomLarge()) {
+            if (super.fight(0)) {
+                super.changeTwitting(1);
+                super.setTweetP(super.getDem());
+                super.setPartner(super.getW().getFighter(super.getDem()));
+                if (super.getPartner() != null) {
+                    // check of the partner responds and starts a conversation
+                    if (super.getPartner().fight(super.getPartner().getDef())) {
+                        super.getPartner().setWhatTweet(true);
+                        super.getPartner().setPartner(this);
+                        super.getPartner().setTweetP(super.getDem()); // assumes the conversation is going to be about the candidate of the agent that started the conversation
+                        return (true);
+                    } else { // if partner declines to respond
+                        super.setPartner(null);
+                    }
+                }
+            }
+        }
+        return (false);
+    }
+
+    /**
+     *  Implementation of retweet behavior
+     *  @return true if agent decided to tweet, false if not
+     **/
+    public boolean retweet (){
+        // retweet behavior. Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
+        // First decide if it wants to retweet, if number of total tweets are > 0.
+        if (super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal() != 0 && super.getT() >= super.getW().getRamdomLarge()) {
+            // If democrat find out of they find a tweet from same partisanship
+            if (super.getDem() && 100*((super.getNet() * super.getW().getTweetCountDemTotal()) / (super.getNet() * super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
+                // Find out if the tweet is going to be about a democrat or republican
+                if (100*((double) super.getW().getTweetsFromDemADem() / (super.getW().getTweetsFromDemADem() + super.getW().getTweetsFromDemARep())) >= super.getW().getRamdom()){
+                    super.setTweetP(super.getDem());
+                } else {
+                    super.setTweetP(!super.getDem());
+                }
+                super.changeTwitting(1);
+                super.setWhatTweet(false);
+                return (true);
+            }
+            // If republican find out of they find a tweet from same partisanship
+            if (!super.getDem() && 100*((super.getNet() * super.getW().getTweetCountRepTotal()) / (super.getW().getTweetCountDemTotal() + super.getNet() * super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
+                // Find out if the tweet is going to be about a democrat or republican
+                if (100*( (double) super.getW().getTweetsFromRepARep() / (super.getW().getTweetsFromRepARep() + super.getW().getTweetsFromRepADem())) >= super.getW().getRamdom()){
+                    super.setTweetP(super.getDem());
+                } else {
+                    super.setTweetP(!super.getDem());
+                }
+                super.changeTwitting(1);
+                super.setWhatTweet(false);
+                return (true);
+            }
+        }
+        return (false);
+    }
+
+    /**
+     *  Implementation of decision to continue conversation
+     *  @return true if agent decided to continue conversation tweet, false if not
+     **/
+    public boolean continueCon (){
         // if already has a twitting partner and is done making a tweet, then check if they want to continue to tweet
         // if the agent is aggressor
         if (super.getPartner() != null){
@@ -47,73 +159,23 @@ public class SimpleModel extends Agent{
                 if (super.fight(0) && super.getPartner().fight(20)){
                     super.changeTwitting(1);
                     super.getPartner().changeTwitting(1);
+                    return(true);
                 } else {
                     super.getPartner().setPartner(null);
                     super.setPartner(null);
                 }
-            // if the agent is defender
+                // if the agent is defender
             } else {
                 if (super.fight(20) && super.getPartner().fight(0)){
                     super.changeTwitting(1);
                     super.getPartner().changeTwitting(1);
+                    return(true);
                 } else {
                     super.getPartner().setPartner(null);
                     super.setPartner(null);
                 }
             }
-            return (0);
         }
-
-        // for now if an agent is not making a tweet then there is a percent chance (given by the t value) they will start making one about its candidate
-        if (super.getT() >= super.getW().getRamdomLarge()){
-            super.changeTwitting(1);
-            super.setTweetP(super.getDem());
-            super.setWhatTweet(true);
-            // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
-            if (super.fight(0)){
-                super.setPartner(super.getW().getFighter(super.getDem()));
-                if (super.getPartner() != null){
-                    // check of the partner responds and starts a conversation
-                    if (super.getPartner().fight(super.getPartner().getDef())){
-                        super.getPartner().setWhatTweet(true);
-                        super.getPartner().setPartner(this);
-                        super.getPartner().setTweetP(super.getDem()); // assumes the conversation is going to be about the candidate of the agent that started the conversation
-                    } else { // if partner declines to respond
-                        super.setPartner(null);
-                    }
-                }
-            }
-            return (0);
-        }
-
-        // retweet behavior. Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
-        // First decide if it wants to retweet, if number of total tweets are > 0.
-        if (super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal() != 0 && super.getT() >= super.getW().getRamdomLarge()) {
-            // If democrat find out of they find a tweet from same partisanship
-            if (super.getDem() && 100*((super.getNet() * super.getW().getTweetCountDemTotal()) / (super.getNet() * super.getW().getTweetCountDemTotal() + super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
-                // Find out if the tweet is going to be about a democrat or republican
-                if (100*(super.getW().getTweetsFromDemADem() / (super.getW().getTweetsFromDemADem() + super.getW().getTweetsFromDemARep())) >= super.getW().getRamdom()){
-                    super.setTweetP(super.getDem());
-                } else {
-                    super.setTweetP(!super.getDem());
-                }
-                super.changeTwitting(1);
-                super.setWhatTweet(false);
-                return (0);
-            }
-            // If republican find out of they find a tweet from same partisanship
-            if (!super.getDem() && 100*((super.getNet() * super.getW().getTweetCountRepTotal()) / (super.getW().getTweetCountDemTotal() + super.getNet() * super.getW().getTweetCountRepTotal())) >= super.getW().getRamdom()) {
-                // Find out if the tweet is going to be about a democrat or republican
-                if (100*(super.getW().getTweetsFromRepARep() / (super.getW().getTweetsFromRepARep() + super.getW().getTweetsFromRepADem())) >= super.getW().getRamdom()){
-                    super.setTweetP(super.getDem());
-                } else {
-                    super.setTweetP(!super.getDem());
-                }
-                super.changeTwitting(1);
-                super.setWhatTweet(false);
-                return (0);
-            }
-        }
-        return (0);
+        return (false);
     }
 }

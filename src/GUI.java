@@ -44,9 +44,9 @@ public class GUI implements ActionListener {
         JPanel pane = new JPanel();
         // in quotation is default values
         JTextField input0 = new JTextField("5400"); //turns. 5400 for full 90 minutes
-        JTextField input1 = new JTextField("100"); // number of democrats
+        JTextField input1 = new JTextField("10000"); // number of democrats
         JTextField input2 = new JTextField("20"); // aggression of democrats
-        JTextField input3 = new JTextField("100"); // number of republicans
+        JTextField input3 = new JTextField("10000"); // number of republicans
         JTextField input4 = new JTextField("20"); // aggression of republicans
         JTextField input6 = new JTextField("20"); // defence modifier on aggression of democrats
         JTextField input7 = new JTextField("20"); // defence modifier on aggression of republicans
@@ -92,11 +92,27 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("<html> Connectedness of republicans, increases likelihood  of retweet <br> 1: no polarization, > 1 more polarized:</html>"));
         pane.add(input11);
 
+        // drop down menu for turning tweet behavior on and off
+        pane.add(new JLabel("Normal tweet behavior"));
+        String[] simoptions1 = {"On", "Off"};
+        JComboBox<String> combobox1 = new JComboBox<>(simoptions1);
+        pane.add(combobox1);
+
+        pane.add(new JLabel("Aggressive tweet behavior"));
+        String[] simoptions2 = {"On", "Off"};
+        JComboBox<String> combobox2 = new JComboBox<>(simoptions2);
+        pane.add(combobox2);
+
+        pane.add(new JLabel("Retweet behavior"));
+        String[] simoptions3 = {"On", "Off"};
+        JComboBox<String> combobox3 = new JComboBox<>(simoptions3);
+        pane.add(combobox3);
+
         // drop down menu for the automated simulations
         pane.add(new JLabel("<html> Automated simulations. Will vary in increments <br> of 1 this value while keep all others as specified:</html>"));
-        String[] simoptions = {"None", "Democrats aggression", "Democrats defence modifier", "Democrats likelihood of tweeting", "Connectedness of democrat network"};
-        JComboBox<String> combobox1 = new JComboBox<>(simoptions);
-        pane.add(combobox1);
+        String[] simoptions4 = {"None", "Democrats aggression", "Democrats defence modifier", "Democrats likelihood of tweeting", "Connectedness of democrat network"};
+        JComboBox<String> combobox4 = new JComboBox<>(simoptions4);
+        pane.add(combobox4);
 
         // adding the file name
         pane.add(new JLabel("Save file name"));
@@ -117,6 +133,37 @@ public class GUI implements ActionListener {
         int rept = this.parseInt(input9.getText());
         double demnet = this.parseDouble(input10.getText());
         double repnet = this.parseDouble(input11.getText());
+
+        // converting behavior input
+        boolean nortb = true;
+        boolean aggtb = true;
+        boolean retb = true;
+        String norb = Objects.requireNonNull(combobox1.getSelectedItem()).toString();
+        switch (norb) {
+            case "On":
+                nortb = true;
+                break;
+            case "Off":
+                nortb = false;
+                break;
+        }
+        String aggb = Objects.requireNonNull(combobox2.getSelectedItem()).toString();
+        switch (aggb) {
+            case "On":
+                aggtb = true;
+                break;
+            case "Off":
+                aggtb = false;
+                break;
+        }String reb = Objects.requireNonNull(combobox3.getSelectedItem()).toString();
+        switch (reb) {
+            case "On":
+                retb = true;
+                break;
+            case "Off":
+                retb = false;
+                break;
+        }
 
         // checking for an invalid input, if so the option selection is started from the beginning again
         if (interror) {
@@ -156,10 +203,10 @@ public class GUI implements ActionListener {
             long start = System.nanoTime();
 
             // will see what value if any should be varied
-            String simSelected = Objects.requireNonNull(combobox1.getSelectedItem()).toString();
+            String simSelected = Objects.requireNonNull(combobox4.getSelectedItem()).toString();
             switch (simSelected) {
                 case "None":
-                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet);
+                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb);
                     tweetsp1.add(world.getTweetCountDemTotal());
                     tweetsp2.add(world.getTweetCountRepTotal());
                     turnsfull.add(turns);
@@ -180,7 +227,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats aggression":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet);
+                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -202,7 +249,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats defence modifier":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -224,7 +271,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats likelihood of tweeting":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, nortb, aggtb, retb);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -246,7 +293,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Connectedness of democrat network":
                     for (double i = 0.00; i < 5; i = i + 0.01) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, nortb, aggtb, retb);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);

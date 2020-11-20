@@ -9,6 +9,9 @@ public class World {
     private ArrayList<Integer> tweetsp2 = new ArrayList<>(); // for storing running tally of tweets
     private ArrayList<Agent> agents = new ArrayList<>(); // for storing the agents
     private Random random = new Random(); // Random object for random number generation
+    private boolean nortb; // switch for the normal tweet behavior, true = on
+    private boolean aggtb; // switch for the aggressive tweet behavior, true = on
+    private boolean retb; // switch for the retweet behavior, true = on
     private int retweets; // counter for the number of retweets. For testing
     private int normaltweets; // count for the number of normal tweets (non retweets). For testing
     private int tweetcountdemtotal; // total number of tweets about democrats
@@ -17,7 +20,7 @@ public class World {
     private int tweetsfromrepadem; // total number of tweets from republican agents about democrat
     private int tweetsfromdemarep; // total number of tweets from democrat agents about republican
     private int tweetsfromreparep; // total number of tweets from republican agents about republican
-    private int turn = 0;
+    private int turn = 0; // turn counter for debugging
 
     /**
      * Constructor
@@ -33,7 +36,7 @@ public class World {
      * @param demnet connectedness of democrats, increases likelihood of retweet
      * @param repnet connectedness of republicans, increases likelihood of retweet
      */
-    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet){
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb ){
         // initialising the tweet counters
         retweets = 0;
         normaltweets = 0;
@@ -43,8 +46,9 @@ public class World {
         tweetsfromrepadem = 0;
         tweetsfromdemarep = 0;
         tweetsfromreparep = 0;
-
-
+        this.nortb = nortb;
+        this.aggtb = aggtb;
+        this.retb = retb;
 
         // creates agents, tries to interweave them
         for(int i = 0; i < nDems; i++){
@@ -82,7 +86,7 @@ public class World {
         System.out.println(tweetsfromrepadem);
         System.out.println(tweetsfromdemarep);
         System.out.println(tweetsfromreparep);
-         */
+        */
     }
 
     // Getter methods
@@ -90,6 +94,9 @@ public class World {
     public int getRamdomLarge(){return (random.nextInt(10000)+1);}
     public int getRetweets(){return (retweets);}
     public int getNormalTweets(){return (normaltweets);}
+    public boolean getNortb(){return (nortb);}
+    public boolean getAggtb(){return (aggtb);}
+    public boolean getRetb(){return (retb);}
     public int getTweetCountDemTotal(){ return (tweetcountdemtotal);}
     public int getTweetCountRepTotal(){ return (tweetcountreptotal);}
     public int getTweetsFromDemADem(){ return (tweetsfromdemadem);}

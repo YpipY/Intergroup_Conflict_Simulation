@@ -1,7 +1,7 @@
 setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation/data")
 library(ggplot2)
 
-v <- read.csv2("test1.csv2")
+v <- read.csv2("AggressionTest1.csv2")
 
 person <- (as.factor(rep(1, 101)))
 data1 <- data.frame(v[,"tweetCountPerson1"],v[,"democratAggression"],person)
@@ -16,10 +16,13 @@ data <- rbind(data1, data2)
 colnames(data)[2] <- "democratAggression"
 
 ggplot(data, aes(democratAggression,tweetCount))+
-  geom_point(aes(colour = factor(person)))
+  geom_point(aes(colour = factor(person)))+
+  labs(color = "Mentions")+
+  labs(x = "democratAggression[%]" ,color = "Mentions")+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
 
 ########################################
-v <- read.csv2("test2.csv2")
+v <- read.csv2("DefenceTest1.csv2")
 
 person <- (as.factor(rep(1, 101)))
 data1 <- data.frame(v[,"tweetCountPerson1"],v[,"democratDefenceModifier"],person)
@@ -32,10 +35,13 @@ data <- rbind(data1, data2)
 colnames(data)[2] <- "democratDefenceModifier"
 
 ggplot(data, aes(democratDefenceModifier,tweetCount))+
-  geom_point(aes(colour = factor(person)))
+  geom_point(aes(colour = factor(person)))+
+  labs(color = "Mentions")+
+  labs(x = "democratDefenceModifier[%]" ,color = "Mentions")+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
 
 #########################################
-v <- read.csv2("test3.csv2")
+v <- read.csv2("LikelihoodOfTweetingTest1.csv2")
 person <- (as.factor(rep(1, 101)))
 data1 <- data.frame(v[,"tweetCountPerson1"],v[,"democratTweetChance"],person)
 person <- (as.factor(rep(2, 101)))
@@ -47,10 +53,12 @@ data <- rbind(data1, data2)
 colnames(data)[2] <- "democratTweetChance"
 
 ggplot(data, aes(democratTweetChance,tweetCount))+
-  geom_point(aes(colour = factor(person)))
+  geom_point(aes(colour = factor(person)))+
+  labs(x = "democrateTweetChance[???]" ,color = "Mentions")+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
 
 #########################################
-v <- read.csv2("test4.csv2")
+v <- read.csv2("NetworkTest1.csv2")
 person <- (as.factor(rep(1, 501)))
 data1 <- data.frame(v[,"tweetCountPerson1"],v[,"democratNetworkModifier"],person)
 person <- (as.factor(rep(2, 501)))
@@ -61,10 +69,15 @@ colnames(data2)[1] <- "tweetCount"
 data <- rbind(data1, data2)
 colnames(data)[2] <- "democratNetworkModifier"
 
-ggplot(data, aes(democratNetworkModifier,tweetCount))+
-  geom_point(aes(colour = factor(person)))
+data[,2] <- as.numeric(levels(data[,2]))[data[,2]]
 
-200/100
+ggplot(data, aes(democratNetworkModifier,tweetCount))+
+  geom_point(aes(colour = person)) +
+  labs(color = "Mentions")+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
+  
+
+100267/100000
 
 sum(data$tweetCount)
 
