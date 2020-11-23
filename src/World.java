@@ -12,6 +12,10 @@ public class World {
     private boolean nortb; // switch for the normal tweet behavior, true = on
     private boolean aggtb; // switch for the aggressive tweet behavior, true = on
     private boolean retb; // switch for the retweet behavior, true = on
+    private int speakerv; // value for the impact of speaker
+    private int interruptsv; // value for the impact of interrupts
+    private int memev; // value for the impact of memes
+    private int interestdecayv; // value used in the interest decay function
     private int retweets; // counter for the number of retweets. For testing
     private int normaltweets; // count for the number of normal tweets (non retweets). For testing
     private int tweetcountdemtotal; // total number of tweets about democrats
@@ -36,10 +40,17 @@ public class World {
      * @param repT likelihood of republicans deciding to tweet
      * @param demnet connectedness of democrats, increases likelihood of retweet
      * @param repnet connectedness of republicans, increases likelihood of retweet
+     * @param aggtb
+     * @param retb
+     * @param nortb
+     * @param useex
+     * @param speakerv
+     * @param interruptsv
+     * @param memev
+     * @param interestdecayv
+     * @param debatename
      */
-    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb ){
-        debate = new Debate();
-
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb, boolean useex, int speakerv, int interruptsv, int memev, int interestdecayv, String debatename){
         // initialising the tweet counters
         retweets = 0;
         normaltweets = 0;
@@ -49,34 +60,62 @@ public class World {
         tweetsfromrepadem = 0;
         tweetsfromdemarep = 0;
         tweetsfromreparep = 0;
+
+        // initialising tweet behavior options
         this.nortb = nortb;
         this.aggtb = aggtb;
         this.retb = retb;
+        this.speakerv = speakerv;
+        this.interruptsv = interruptsv;
+        this.memev = memev;
+        this.interestdecayv = interestdecayv;
 
-        // creates agents, tries to interweave them
-        for(int i = 0; i < nDems; i++){
-            agents.add(new SimpleModel(true, demAgg, demDef, demT, demnet, this));
-            if (nReps > 0){
-                agents.add(new SimpleModel(false, repAgg, repDef, repT, repnet, this));
-                nReps--;
+        // creates agents, with or without external factors, tries to interweave them
+        if (useex) {
+            debate = new Debate(debatename);
+            for (int i = 0; i < nDems; i++) {
+                agents.add(new FullModelExternal(true, demAgg, demDef, demT, demnet, this));
+                if (nReps > 0) {
+                    agents.add(new FullModelExternal(false, repAgg, repDef, repT, repnet, this));
+                    nReps--;
+                }
             }
-        }
-        for(int i = 0; i < nReps; i++){
-            agents.add(new SimpleModel(false, repAgg, repDef, repT, repnet, this));
-        }
-
-        // run the simulation
-        int speakertime = 0;
-        boolean speaker = true;
-        for(int i = 0; i < turns; i++){
-            debate.advanceTime(i);
-            debate.getWord();
-            System.out.println(debate.getWord());
-            doTurn(speaker);
-            speakertime++;
-            if (speakertime > 10){
-                speaker = !speaker;
-                speakertime = 0;
+            for (int i = 0; i < nReps; i++) {
+                agents.add(new FullModelExternal(false, repAgg, repDef, repT, repnet, this));
+            }
+            // run the simulation
+            int speakertime = 0;
+            boolean speaker = true;
+            for(int i = 0; i < turns; i++){
+                debate.advanceTime(i);
+                doTurn(speaker);
+                speakertime++;
+                if (speakertime > 10){
+                    speaker = !speaker;
+                    speakertime = 0;
+                }
+            }
+        } else {
+            for (int i = 0; i < nDems; i++) {
+                agents.add(new FullModelNoExternal(true, demAgg, demDef, demT, demnet, this));
+                if (nReps > 0) {
+                    agents.add(new FullModelNoExternal(false, repAgg, repDef, repT, repnet, this));
+                    nReps--;
+                }
+            }
+            for (int i = 0; i < nReps; i++) {
+                agents.add(new FullModelNoExternal(false, repAgg, repDef, repT, repnet, this));
+            }
+            // run the simulation
+            int speakertime = 0;
+            boolean speaker = true;
+            for(int i = 0; i < turns; i++){
+                doTurn(speaker);
+                speakertime++;
+                if (speakertime > 10){
+                    speaker = !speaker;
+                    speakertime = 0;
+                }
             }
         }
 
@@ -97,7 +136,7 @@ public class World {
 
     // Getter methods
     public int getRamdom(){return (random.nextInt(100)+1);}
-    public int getRamdomLarge(){return (random.nextInt(10000)+1);}
+    public int getRamdomLarge(){return (random.nextInt(1000000)+1);}
     public int getRetweets(){return (retweets);}
     public int getNormalTweets(){return (normaltweets);}
     public boolean getNortb(){return (nortb);}
@@ -109,6 +148,11 @@ public class World {
     public int getTweetsFromRepADem(){ return (tweetsfromrepadem);}
     public int getTweetsFromDemARep(){ return (tweetsfromdemarep);}
     public int getTweetsFromRepARep(){ return (tweetsfromreparep);}
+    public Debate getDebate(){return (debate);}
+    public int getSpeakerv(){ return (speakerv);}
+    public int getInterruptsv(){ return (interruptsv);}
+    public int getMemev(){ return (memev);}
+    public int getInterestdecayv(){ return (interestdecayv);}
 
     /**
      * Add to the number of retweets

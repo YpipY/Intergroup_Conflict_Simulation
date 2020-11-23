@@ -1,8 +1,8 @@
-setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation/data")
+setwd("C:/Users/Simon Møller Nielsen/Documents/Intergroup Conflict Simulation")
 
 v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
 
-v <- read.csv("Debate2012_1_tidy.csv")
+v <- read.csv("Debate2016_1_tidy.csv")
 
 library(ggplot2)
 

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Class handling the data form the real debate
+ * Class handling the data form the real debate. But advancing the index using the advanceTime method the getter methods will return the data form that second of the debate
  */
 
 public class Debate {
@@ -16,9 +16,12 @@ public class Debate {
     private ArrayList<Boolean> interrupt = new ArrayList<>(); // list of if this was started by an interrupt
     private int curindex; // current index
 
-    public Debate(){
+    /**
+    * Constructor for the debate class
+    */
+    public Debate(String debatename){
         curindex = 0;
-        readCSV();
+        readCSV(debatename);
     }
 
     // Getter methods
@@ -34,14 +37,21 @@ public class Debate {
     public int getSpeaker(){return (speaker.get(curindex));}
     public boolean getInterrupt(){return (interrupt.get(curindex));}
 
+    /**
+     * Makes the debate object advance its indexing to the turn give (cannot go backwards)
+     * @param turn The turn to advance to
+     */
     public void advanceTime(int turn) {
         while (end.get(curindex) <= turn){
             curindex++;
         }
     }
 
-    private void readCSV (){
-        String filename = System.getProperty("user.dir") + "\\data\\" + "Debate2012_1_tidy.csv";
+    /**
+    * Reads the debate data off the .csv file provided
+    */
+    private void readCSV (String debatename){
+        String filename = System.getProperty("user.dir") + "\\" + debatename;
         try {
             BufferedReader in = new BufferedReader(new FileReader(filename));
             String line;
@@ -49,34 +59,100 @@ public class Debate {
             in.readLine(); // getting ride of the header line
             while ((line = in.readLine()) != null){
                 lineval = line.split(",");
-                if (!lineval[1].equals("NA")) {
-                    words.add(lineval[1].replace("\"", ""));
-                    String temp = lineval[2].replace("S", "");
-                    temp = temp.replace("\"", "");
-                    start.add(parseInt(temp));
-                    temp = lineval[3].replace("S", "");
-                    temp = temp.replace("\"", "");
-                    end.add(parseInt(temp));
+                words.add(lineval[1].replace("\"", ""));
+                String temp = lineval[2].replace("S", "");
+                temp = temp.replace("\"", "");
+                start.add(parseInt(temp));
+                temp = lineval[3].replace("S", "");
+                temp = temp.replace("\"", "");
+                end.add(parseInt(temp));
+                temp = lineval[5].replace("\"", "");
 
-                    temp = lineval[5].replace("\"", "");
-                    switch (temp) {
-                        case "Lehrer:":
-                            speaker.add(0);
-                            break;
-                        case "Obama:":
-                            speaker.add(1);
-                            break;
-                        default:
-                            speaker.add(2);
-                            break;
-                    }
-
-                    temp = lineval[6].replace("\"", "");
-                    if (temp.equals("Yes")) {
-                        interrupt.add(true);
-                    } else {
-                        interrupt.add(false);
-                    }
+                switch (debatename) {
+                    case "Debate2012_1_tidy.csv":
+                        switch (temp) {
+                            case "Lehrer:":
+                                speaker.add(0);
+                                break;
+                            case "Obama:":
+                                speaker.add(1);
+                                break;
+                            default:
+                                speaker.add(2);
+                                break;
+                        }
+                        break;
+                    case "Debate2012_2_tidy.csv":
+                        switch (temp) {
+                            case "Crowley:":
+                                speaker.add(0);
+                                break;
+                            case "Obama:":
+                                speaker.add(1);
+                                break;
+                            default:
+                                speaker.add(2);
+                                break;
+                        }
+                        break;
+                    case "Debate2012_3_tidy.csv":
+                        switch (temp) {
+                            case "Schieffer:":
+                                speaker.add(0);
+                                break;
+                            case "Obama:":
+                                speaker.add(1);
+                                break;
+                            default:
+                                speaker.add(2);
+                                break;
+                        }
+                        break;
+                    case "Debate2016_1_tidy.csv":
+                        switch (temp) {
+                            case "HOLT:":
+                                speaker.add(0);
+                                break;
+                            case "TRUMP:":
+                                speaker.add(1);
+                                break;
+                            default:
+                                speaker.add(2);
+                                break;
+                        }
+                        break;
+                    case "Debate2016_2_tidy.csv":
+                        switch (temp) {
+                            case "RADDATZ:":
+                                speaker.add(0);
+                                break;
+                            case "TRUMP:":
+                                speaker.add(1);
+                                break;
+                            default:
+                                speaker.add(2);
+                                break;
+                        }
+                        break;
+                    default:
+                        switch (temp) {
+                            case "Wallace:":
+                                speaker.add(0);
+                                break;
+                            case "Trump:":
+                                speaker.add(1);
+                                break;
+                            default:
+                                speaker.add(2);
+                                break;
+                        }
+                        break;
+                }
+                temp = lineval[6].replace("\"", "");
+                if (temp.equals("Yes")) {
+                    interrupt.add(true);
+                } else {
+                    interrupt.add(false);
                 }
             }
         } catch (IOException e) {
@@ -85,12 +161,20 @@ public class Debate {
         }
     }
 
+    /**
+     * Parses a string to int or catches the exception
+     * @param s String to be parsed
+     * @return The int value found in the string
+     */
     private int parseInt(String s) {
         try {
+            if (s.equals("NA")){
+                return (0);
+            }
             return (int) Double.parseDouble(s);
         } catch (NumberFormatException e) {
             JFrame frame = new JFrame();
-            JOptionPane.showMessageDialog(frame, "Error in file read. Expecting int, value was: " + s);
+            JOptionPane.showMessageDialog(frame, "Error in file read. Expecting numeric, value was: " + s);
             return 0;
         }
     }
