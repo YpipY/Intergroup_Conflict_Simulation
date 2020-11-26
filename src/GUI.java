@@ -54,7 +54,8 @@ public class GUI implements ActionListener {
         JTextField input9 = new JTextField("100"); // likelihood of republicans deciding to tweet
         JTextField input10 = new JTextField("1.00"); // connectedness of democrats, increases likelihood of retweet
         JTextField input11 = new JTextField("1.00"); // connectedness of republicans, increases likelihood of retweet
-        JTextField input12 = new JTextField("10"); // impact of speaker, increase to aggression
+        JTextField input12 = new JTextField("1.00"); // a value of impact of speaker, increase to aggression
+        JTextField input16 = new JTextField("1.00"); // b value of impact of speaker, increase to aggression
         JTextField input13 = new JTextField("10"); // impact of interrupt, increase to aggression
         JTextField input14 = new JTextField("1"); // impact of memes, increase in likelihood of tweeting
         JTextField input15 = new JTextField("1"); // value of the interest decay function
@@ -96,8 +97,11 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("<html> Connectedness of republicans, increases likelihood  of retweet <br> 1: no polarization, > 1 more polarized:</html>"));
         pane.add(input11);
 
-        pane.add(new JLabel("Impact of speaker, increase to aggression:"));
+        pane.add(new JLabel("a value of impact of speaker, increase to aggression:"));
         pane.add(input12);
+
+        pane.add(new JLabel("b value of impact of speaker, increase to aggression"));
+        pane.add(input16);
 
         pane.add(new JLabel("Impact of interrupt, increase to aggression:"));
         pane.add(input13);
@@ -155,7 +159,8 @@ public class GUI implements ActionListener {
         int rept = parseInt(input9.getText());
         double demnet = parseDouble(input10.getText());
         double repnet = parseDouble(input11.getText());
-        int speakerv = parseInt(input12.getText());
+        double speakera = parseDouble(input12.getText());
+        double speakerb = parseDouble(input16.getText());
         int interruptsv = parseInt(input13.getText());
         int memev = parseInt(input14.getText());
         int interestdecayv = parseInt(input15.getText());
@@ -259,7 +264,7 @@ public class GUI implements ActionListener {
             String simSelected = Objects.requireNonNull(combobox5.getSelectedItem()).toString();
             switch (simSelected) {
                 case "None":
-                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakerv, interruptsv, memev, interestdecayv, debatename);
+                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
                     tweetsp1.add(world.getTweetCountDemTotal());
                     tweetsp2.add(world.getTweetCountRepTotal());
                     turnsfull.add(turns);
@@ -280,7 +285,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats aggression":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakerv, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -302,7 +307,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats defence modifier":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakerv, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -324,7 +329,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats likelihood of tweeting":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, nortb, aggtb, retb, useex, speakerv, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -346,7 +351,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Connectedness of democrat network":
                     for (double i = 0.00; i < 5; i = i + 0.01) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, nortb, aggtb, retb, useex, speakerv, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);

@@ -12,7 +12,8 @@ public class World {
     private boolean nortb; // switch for the normal tweet behavior, true = on
     private boolean aggtb; // switch for the aggressive tweet behavior, true = on
     private boolean retb; // switch for the retweet behavior, true = on
-    private int speakerv; // value for the impact of speaker
+    private double speakera; // a value for the impact of speaker
+    private double speakerb; // b value for the impact of speaker
     private int interruptsv; // value for the impact of interrupts
     private int memev; // value for the impact of memes
     private int interestdecayv; // value used in the interest decay function
@@ -44,13 +45,14 @@ public class World {
      * @param retb
      * @param nortb
      * @param useex
-     * @param speakerv
+     * @param speakera
+     * @param speakerb
      * @param interruptsv
      * @param memev
      * @param interestdecayv
      * @param debatename
      */
-    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb, boolean useex, int speakerv, int interruptsv, int memev, int interestdecayv, String debatename){
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb, boolean useex, double speakera, double speakerb, int interruptsv, int memev, int interestdecayv, String debatename){
         // initialising the tweet counters
         retweets = 0;
         normaltweets = 0;
@@ -65,7 +67,8 @@ public class World {
         this.nortb = nortb;
         this.aggtb = aggtb;
         this.retb = retb;
-        this.speakerv = speakerv;
+        this.speakera = speakera;
+        this.speakerb = speakerb;
         this.interruptsv = interruptsv;
         this.memev = memev;
         this.interestdecayv = interestdecayv;
@@ -73,6 +76,7 @@ public class World {
         // creates agents, with or without external factors, tries to interweave them
         if (useex) {
             debate = new Debate(debatename);
+            turns = debate.getEnd().get(debate.getEnd().size()-1);
             for (int i = 0; i < nDems; i++) {
                 agents.add(new FullModelExternal(true, demAgg, demDef, demT, demnet, this));
                 if (nReps > 0) {
@@ -149,7 +153,8 @@ public class World {
     public int getTweetsFromDemARep(){ return (tweetsfromdemarep);}
     public int getTweetsFromRepARep(){ return (tweetsfromreparep);}
     public Debate getDebate(){return (debate);}
-    public int getSpeakerv(){ return (speakerv);}
+    public double getSpeakera(){ return (speakera);}
+    public double getSpeakerb(){ return (speakerb);}
     public int getInterruptsv(){ return (interruptsv);}
     public int getMemev(){ return (memev);}
     public int getInterestdecayv(){ return (interestdecayv);}
@@ -222,12 +227,11 @@ public class World {
                     tweetsfromreparep = tweetsfromreparep + x;
                 }
             }
-
         }
 
-        // output turn by turn totals, mostly for debugging purposes
-        //turn++;
-        //System.out.println("trun:" + turn  + "dem: " + tweetcountdem + " " + "rep: " + tweetcountrep);
+        //output turn by turn totals, mostly for debugging purposes
+        System.out.println("turn:" + turn + " "  + "dem:" + tweetcountdem + " " + "rep:" + tweetcountrep);
+        turn++;
 
         // adding the new total of tweets
         tweetsp1.add(tweetcountdem);

@@ -22,9 +22,9 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public int makeTweet (boolean speakerDem){
-        // if they have spend 10 turns (seconds) making a tweet then it is sent
-        if (super.getTwitting() >= 10) {
-            super.changeTwitting(-10);
+        // if they have spend 5 turns (seconds) making a tweet then it is sent
+        if (super.getTwitting() >= 5) {
+            super.changeTwitting(-5);
             if (super.getWhatTweet()){
                 super.getW().addNormalTweets(1);
             } else{
@@ -66,6 +66,19 @@ public class FullModelExternal extends Agent{
         }
         return (0);
     }
+    /**
+     * Modified return of normal tweet chance that takes the external data into account
+     * @return tweet chance
+     **/
+    @Override
+    public int getT() {return 0;}
+
+    /**
+     * Modified return of retweet chance that takes the external data into account
+     * @return retweet chance
+     **/
+    @Override
+    public int getRT() {return 0;}
 
     /**
      * Decide if agent wants to fights (have a conversation) accounts for external factors
@@ -74,15 +87,15 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public boolean fight(int x){
-        int bonus = 0;
+        double bonus = 0;
         int speak = 2;
-        if (super.getDem() == true){
+        if (super.getDem()){
             speak = 1;
         }
 
         // check if I my candidate is speaker and I should get and increase to aggression
         if (speak == super.getW().getDebate().getSpeaker()){
-            bonus = bonus + super.getW().getSpeakerv();
+            bonus = bonus + super.getW().getSpeakera() + super.getW().getDebate().getSpeakingturns() * super.getW().getSpeakerb();
             // check if it was an interrupt and I should increase to aggression even further
             if (super.getW().getDebate().getInterrupt()){
                 bonus = bonus + super.getW().getInterruptsv();

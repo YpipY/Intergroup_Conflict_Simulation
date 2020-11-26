@@ -22,9 +22,9 @@ public class FullModelNoExternal extends Agent{
      **/
     @Override
     public int makeTweet (boolean speakerDem){
-        // if they have spend 10 turns (seconds) making a tweet then it is sent
-        if (super.getTwitting() >= 10) {
-            super.changeTwitting(-10);
+        // if they have spend 5 turns (seconds) making a tweet then it is sent
+        if (super.getTwitting() >= 5) {
+            super.changeTwitting(-5);
             if (super.getWhatTweet()){
                 super.getW().addNormalTweets(1);
             } else{

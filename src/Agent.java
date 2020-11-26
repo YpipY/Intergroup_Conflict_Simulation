@@ -40,6 +40,7 @@ public class Agent{
     public int getAgg(){return (agg);}
     public int getDef() {return def;}
     public int getT() {return t;}
+    public int getRT() {return t;}
     public double getNet() {return net;}
     public World getW(){return (w);}
     public int getTwitting(){return (twitting);}
@@ -148,7 +149,7 @@ public class Agent{
     public boolean retweet (){
         // retweet behavior. Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
         // First decide if it wants to retweet, if number of total tweets are > 0.
-        if (getW().getTweetCountDemTotal() + getW().getTweetCountRepTotal() != 0 && getT() >= getW().getRamdomLarge()) {
+        if (getW().getTweetCountDemTotal() + getW().getTweetCountRepTotal() != 0 && getRT() >= getW().getRamdomLarge()) {
             // If democrat find out of they find a tweet from same partisanship
             if (getDem() && 100*((getNet() * getW().getTweetCountDemTotal()) / (getNet() * getW().getTweetCountDemTotal() + getW().getTweetCountRepTotal())) >= getW().getRamdom()) {
                 // Find out if the tweet is going to be about a democrat or republican

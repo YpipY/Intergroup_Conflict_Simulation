@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.lang.Math;
 
 /**
  * Class handling the data form the real debate. But advancing the index using the advanceTime method the getter methods will return the data form that second of the debate
@@ -15,12 +16,24 @@ public class Debate {
     private ArrayList<Integer> speaker = new ArrayList<>(); // list of who is speaking
     private ArrayList<Boolean> interrupt = new ArrayList<>(); // list of if this was started by an interrupt
     private int curindex; // current index
+    private int lastmeme; // time since last meme
+    private int turn; // for holding current turn
+    private ArrayList<String> memewords = new ArrayList<>(); // list of the words that should be recognised as memes
 
     /**
     * Constructor for the debate class
     */
     public Debate(String debatename){
+        // initialising variables
         curindex = 0;
+        lastmeme = -100000;
+
+        // adding the meme words
+        // big bird is looked at separately since it is two words that have to come right after each other
+        memewords.add("binders");
+        memewords.add("bayonets");
+
+        // reading the debate data
         readCSV(debatename);
     }
 
@@ -28,23 +41,72 @@ public class Debate {
     public ArrayList<String> getWord(){
         ArrayList<String> word = new ArrayList<>();
         int i = curindex;
-        while (end.get(i).equals(end.get(curindex))){
+        while (i < end.size() && end.get(i).equals(end.get(curindex))){
             word.add(words.get(i));
             i++;
         }
         return (word);
     }
     public int getSpeaker(){return (speaker.get(curindex));}
+    public ArrayList<Integer> getEnd(){return (end);}
     public boolean getInterrupt(){return (interrupt.get(curindex));}
+    public int getSpeakingturns(){return (turn - start.get(curindex));}
+    public ArrayList<String> getMemewords(){return (memewords);}
+    public int getLastmeme(){return (lastmeme);}
+    public int getTurn(){return (turn);}
 
     /**
      * Makes the debate object advance its indexing to the turn give (cannot go backwards)
      * @param turn The turn to advance to
      */
     public void advanceTime(int turn) {
-        while (end.get(curindex) <= turn){
-            curindex++;
+        this.turn = turn;
+        if (end.get(curindex) <= turn) {
+            while (end.get(curindex) <= turn) {
+                curindex++;
+            }
+            for (String word : getWord()){
+                for (String meme : getMemewords()){
+                    if (word.equals(meme)){
+                        lastmeme = turn + (int) ((1+getWord().indexOf("big")) * ((double) (end.get(curindex) - start.get(curindex))/getWord().size()));
+                    }
+                }
+                // for big bird since it is two words
+                if (word.equals("big") && getWord().get(getWord().indexOf(word) + 1).equals("bird")){
+                    lastmeme = turn + (int) ((1+getWord().indexOf("big")) * ((double) (end.get(curindex) - start.get(curindex))/getWord().size()));
+                }
+            }
         }
+    }
+
+    /**
+     * Returns the current increase in tweet chance due to a meme event
+     * @return The percentage to increase tweet chance with
+     */
+    public double memeTweetFunc (){
+        // Meme function tweet: (1/(1+e^(-0.75(t-25)) * (1000*e^(-0.015t))) . t is times since meme onset
+        // 724 max value
+        return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-15)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/724);
+    }
+
+    /**
+     * Returns the current increase in retweet chance due to a meme event
+     * @return The percentage to increase retweet chance with
+     */
+    public double memeRetweetFunc (){
+        // Meme function retweet: (1/(1+e^(-0.75(t-15)) * (1000*e^(-0.015t))) . t is times since meme onset
+        // 724 max value
+        return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-25)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/724);
+    }
+
+    /**
+     * Returns the current tweet chance according to the long term interest function
+     * @return The current tweet chance modifier
+     */
+    public double interestFunc (){
+        // Interest decay function: (-0.00001t^2) + 0.06t + 10 .  t is times since the start of the debate
+        // 100 max value
+        return ((-0.00001*(Math.pow(turn,2)) + (0.06*turn) + 10)/100);
     }
 
     /**

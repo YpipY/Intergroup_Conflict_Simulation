@@ -1,2 +1,2 @@
 tweetCountPerson1;tweetCountPerson2;numberOfTurns;numberOfDemocrats;numberOfRepublicans;democratAggression;republicanAggression;democratDefenceModifier;republicanDefenceModifier;democratTweetChance;republicanTweetChance;democratNetworkModifier;republicanNetworkModifier;numberOfRetweets;numberOfNormalTweets
-9667;9699;5400;10000;10000;20;20;20;20;100;100;1.0;1.0;7189;12177
+0;0;5400;10000;10000;20;20;20;20;100;100;1.0;1.0;0;0
