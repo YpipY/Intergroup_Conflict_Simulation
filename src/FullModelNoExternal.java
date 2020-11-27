@@ -52,11 +52,13 @@ public class FullModelNoExternal extends Agent{
         }
 
         // aggressive tweet behavior
+        /*
         if (super.getW().getAggtb()) {
             if (super.aggTweet()){
                 return (0);
             }
         }
+         */
 
         // retweet behavior
         if (super.getW().getRetb()) {

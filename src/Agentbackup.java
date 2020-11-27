@@ -1,8 +1,8 @@
 /**
-* Class of the agents, implementation of the decision-making model (makeTweet()) is done in its subclasses
-*/
+ * Class of the agents, implementation of the decision-making model (makeTweet()) is done in its subclasses
+ */
 
-public class Agent{
+public class Agentbackup{
     private boolean dem; // is agent a democrat, true = democrat, false = republican
     private int agg; // aggression of agent [1-100]
     private int def; // defence modifier on aggression
@@ -23,7 +23,7 @@ public class Agent{
      * @param net connectedness of, increases likelihood of retweet. Multiplier
      * @param w The world the agent is operating in
      */
-    public Agent(boolean dem, int agg, int def, int t, double net, World w){
+    public Agentbackup(boolean dem, int agg, int def, int t, double net, World w){
         this.dem = dem;
         this.agg = agg;
         this.def = def;
@@ -107,9 +107,6 @@ public class Agent{
     public boolean normalTweet (){
         // for now if an agent is not making a tweet then there is a percent chance (given by the t value) they will start making one about its candidate
         if (getT() >= getW().getRamdomLarge()) {
-            if (aggTweet()){
-                return (true);
-            }
             changeTwitting(1);
             setTweetP(getDem());
             setWhatTweet(true);
@@ -124,19 +121,21 @@ public class Agent{
      **/
     public boolean aggTweet (){
         // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
-        if (fight(0)) {
-            changeTwitting(1);
-            setTweetP(getDem());
-            setPartner(getW().getFighter(getDem()));
-            if (getPartner() != null) {
-                // check of the partner responds and starts a conversation
-                if (getPartner().fight(getPartner().getDef())) {
-                    getPartner().setWhatTweet(true);
-                    getPartner().setPartner(this);
-                    getPartner().setTweetP(getDem()); // assumes the conversation is going to be about the candidate of the agent that started the conversation
-                    return (true);
-                } else { // if partner declines to respond
-                    setPartner(null);
+        if (getT() >= getW().getRamdomLarge()) {
+            if (fight(0)) {
+                changeTwitting(1);
+                setTweetP(getDem());
+                setPartner(getW().getFighter(getDem()));
+                if (getPartner() != null) {
+                    // check of the partner responds and starts a conversation
+                    if (getPartner().fight(getPartner().getDef())) {
+                        getPartner().setWhatTweet(true);
+                        getPartner().setPartner(null);///////////////////////////////////////////////////// remember to change !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        getPartner().setTweetP(getDem()); // assumes the conversation is going to be about the candidate of the agent that started the conversation
+                        return (true);
+                    } else { // if partner declines to respond
+                        setPartner(null);
+                    }
                 }
             }
         }

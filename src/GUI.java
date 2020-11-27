@@ -55,7 +55,7 @@ public class GUI implements ActionListener {
         JTextField input10 = new JTextField("1.00"); // connectedness of democrats, increases likelihood of retweet
         JTextField input11 = new JTextField("1.00"); // connectedness of republicans, increases likelihood of retweet
         JTextField input12 = new JTextField("0.00"); // a value of impact of speaker, increase to aggression
-        JTextField input16 = new JTextField("5.00"); // b value of impact of speaker, increase to aggression
+        JTextField input16 = new JTextField("20.00"); // b value of impact of speaker, increase to aggression
         JTextField input13 = new JTextField("10"); // impact of interrupt, increase to aggression
         JTextField input14 = new JTextField("500"); // impact of memes, increase in likelihood of tweeting
         JTextField input15 = new JTextField("500"); // value of the interest decay function
