@@ -1,10 +1,40 @@
-setwd("C:/Users/Simon M�ller Nielsen/Documents/Intergroup Conflict Simulation")
+setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation")
 
 v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
 
-v <- read.csv("Debate2016_1_tidy.csv")
+v <- read.csv("Debate2012_2_tidy.csv")
+
+
+setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation/data")
+
 
 library(ggplot2)
+
+v <- read.csv2("test.csv2")
+
+person <- (as.factor(rep(1, 5975)))
+data1 <- data.frame(v[,"tweetCountDem"],v[,"turn"],person)
+person <- (as.factor(rep(2, 5975)))
+data2 <- data.frame(v[,"tweetCountRep"],v[,"turn"],person)
+
+
+colnames(data1)[1] <- "tweetCount"
+colnames(data2)[1] <- "tweetCount"
+
+data <- rbind(data1, data2)
+colnames(data)[2] <- "democratAggression"
+
+ggplot(data, aes(democratAggression,tweetCount))+
+  geom_point(aes(colour = factor(person)))+
+  labs(color = "Mentions")+
+  labs(x = "turn" ,color = "Mentions")+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
+
+#+
+#  xlim(5, 6000)+
+#  ylim(200, 650)
+
+########################################
 
 v <- read.csv2("AggressionTest1.csv2")
 

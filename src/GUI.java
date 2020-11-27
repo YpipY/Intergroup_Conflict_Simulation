@@ -45,20 +45,20 @@ public class GUI implements ActionListener {
         // in quotation is default values
         JTextField input0 = new JTextField("5400"); //turns. 5400 for full 90 minutes
         JTextField input1 = new JTextField("10000"); // number of democrats
-        JTextField input2 = new JTextField("20"); // aggression of democrats
+        JTextField input2 = new JTextField("200"); // aggression of democrats
         JTextField input3 = new JTextField("10000"); // number of republicans
-        JTextField input4 = new JTextField("20"); // aggression of republicans
-        JTextField input6 = new JTextField("20"); // defence modifier on aggression of democrats
-        JTextField input7 = new JTextField("20"); // defence modifier on aggression of republicans
-        JTextField input8 = new JTextField("100"); // likelihood of democrats deciding to tweet
-        JTextField input9 = new JTextField("100"); // likelihood of republicans deciding to tweet
+        JTextField input4 = new JTextField("200"); // aggression of republicans
+        JTextField input6 = new JTextField("200"); // defence modifier on aggression of democrats
+        JTextField input7 = new JTextField("200"); // defence modifier on aggression of republicans
+        JTextField input8 = new JTextField("2000"); // likelihood of democrats deciding to tweet
+        JTextField input9 = new JTextField("2000"); // likelihood of republicans deciding to tweet
         JTextField input10 = new JTextField("1.00"); // connectedness of democrats, increases likelihood of retweet
         JTextField input11 = new JTextField("1.00"); // connectedness of republicans, increases likelihood of retweet
-        JTextField input12 = new JTextField("1.00"); // a value of impact of speaker, increase to aggression
-        JTextField input16 = new JTextField("1.00"); // b value of impact of speaker, increase to aggression
+        JTextField input12 = new JTextField("0.00"); // a value of impact of speaker, increase to aggression
+        JTextField input16 = new JTextField("5.00"); // b value of impact of speaker, increase to aggression
         JTextField input13 = new JTextField("10"); // impact of interrupt, increase to aggression
-        JTextField input14 = new JTextField("1"); // impact of memes, increase in likelihood of tweeting
-        JTextField input15 = new JTextField("1"); // value of the interest decay function
+        JTextField input14 = new JTextField("500"); // impact of memes, increase in likelihood of tweeting
+        JTextField input15 = new JTextField("500"); // value of the interest decay function
 
         // text box layout
         pane.setLayout(new GridLayout(0, 2));
@@ -103,13 +103,13 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("b value of impact of speaker, increase to aggression"));
         pane.add(input16);
 
-        pane.add(new JLabel("Impact of interrupt, increase to aggression:"));
+        pane.add(new JLabel("Impact of interrupt, added to aggression [0-100]:"));
         pane.add(input13);
 
-        pane.add(new JLabel("Impact of memes, increase in likelihood of tweeting:"));
+        pane.add(new JLabel("Max impact of memes, added to likelihood of tweeting [0-1000000]:"));
         pane.add(input14);
 
-        pane.add(new JLabel("Value of the interest decay function (function TBD):"));
+        pane.add(new JLabel("Max impact the long term attention, added to likelihood of tweeting [0-1000000]:"));
         pane.add(input15);
 
         // drop down menu for turning tweet behavior on and off
@@ -223,19 +223,21 @@ public class GUI implements ActionListener {
                 break;
         }
 
+        // Check if cancel or the exit bottom what clicked, if so close the program
+        if (options != 0){
+            System.exit(1);
         // checking for an invalid input, if so the option selection is started from the beginning again
-        if (interror) {
+        }else if (interror) {
             JOptionPane.showMessageDialog(frame, "The values without .00 in the default value must be a whole number");
             new GUI();
         } else if (doubleerror) {
             JOptionPane.showMessageDialog(frame, "The values must be numeric");
             new GUI();
-        } else if (100 < demAgg || 0 > demAgg || 100 < repAgg || 0 > repAgg) {
+        } else if (1000 < demAgg || 0 > demAgg || 1000 < repAgg || 0 > repAgg) {
             JOptionPane.showMessageDialog(frame, "Aggression must be between 0 and 100 (inclusive)");
             new GUI();
             // only the input is valid and ok was selected will the simulation start
-        } else if (options == 0) {
-
+        } else {
             // for the GUI while the simulations are running
             JFrame frame2 = new JFrame("Simulations are running");
             frame2.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -264,7 +266,7 @@ public class GUI implements ActionListener {
             String simSelected = Objects.requireNonNull(combobox5.getSelectedItem()).toString();
             switch (simSelected) {
                 case "None":
-                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
+                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, input5.getText());
                     tweetsp1.add(world.getTweetCountDemTotal());
                     tweetsp2.add(world.getTweetCountRepTotal());
                     turnsfull.add(turns);
@@ -285,7 +287,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats aggression":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -307,7 +309,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats defence modifier":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -326,10 +328,11 @@ public class GUI implements ActionListener {
                         lable1.setText("Simulation progress: " + ((i* 100) / 101) + "%");
                         con.repaint();
                     }
+                    output();
                     break;
                 case "Democrats likelihood of tweeting":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -348,10 +351,11 @@ public class GUI implements ActionListener {
                         lable1.setText("Simulation progress: " + ((i* 100) / 101) + "%");
                         con.repaint();
                     }
+                    output();
                     break;
                 case "Connectedness of democrat network":
                     for (double i = 0.00; i < 5; i = i + 0.01) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename);
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -370,11 +374,11 @@ public class GUI implements ActionListener {
                         lable1.setText("Simulation progress: " + (int) (i / 5 * 100) + "%");
                         con.repaint();
                     }
+                    output();
                     break;
             }
             long stop = System.nanoTime();
-            output();
-            if ( 10 < (((stop - start) / 1000000000) % 60)) {
+            if (10 < (((stop - start) / 1000000000) % 60)) {
                 JOptionPane.showMessageDialog(frame, "Simulations done. Time elapse: " + (((stop - start) / 1000000000) / 60) + ":" + (((stop - start) / 1000000000) % 60) + " minutes");
             } else {
                 JOptionPane.showMessageDialog(frame, "Simulations done. Time elapse: " + (((stop - start) / 1000000000) / 60) + ":" + "0" + (((stop - start) / 1000000000) % 60) + " minutes");
@@ -419,9 +423,9 @@ public class GUI implements ActionListener {
         String filename = System.getProperty("user.dir") + "\\data\\" + input5.getText() + ".csv2";
         try {
             FileWriter writer = new FileWriter(filename);
-            writer.write("tweetCountPerson1");
+            writer.write("tweetCountDem");
             writer.write(';');
-            writer.write("tweetCountPerson2");
+            writer.write("tweetCountRep");
             writer.write(';');
             writer.write("numberOfTurns");
             writer.write(';');

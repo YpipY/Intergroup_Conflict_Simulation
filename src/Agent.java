@@ -39,6 +39,7 @@ public class Agent{
     public boolean getDem(){return (dem);}
     public int getAgg(){return (agg);}
     public int getDef() {return def;}
+    public int getBaseT() {return t;}
     public int getT() {return t;}
     public int getRT() {return t;}
     public double getNet() {return net;}
@@ -86,7 +87,7 @@ public class Agent{
      * @return True if agents wants fights
      **/
     public boolean fight(int x){
-        return (agg + x >= w.getRamdom());
+        return (agg + x >= w.getRamdomFight());
     }
 
     /**
@@ -98,7 +99,6 @@ public class Agent{
     public int makeTweet (boolean x){
         return (0);
     }
-
 
     /**
      *  Implementation of normal tweet behavior

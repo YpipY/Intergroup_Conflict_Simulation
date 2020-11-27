@@ -71,14 +71,18 @@ public class FullModelExternal extends Agent{
      * @return tweet chance
      **/
     @Override
-    public int getT() {return 0;}
+    public int getT() {
+        return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
+    }
 
     /**
      * Modified return of retweet chance that takes the external data into account
      * @return retweet chance
      **/
     @Override
-    public int getRT() {return 0;}
+    public int getRT() {
+        return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
+    }
 
     /**
      * Decide if agent wants to fights (have a conversation) accounts for external factors
@@ -102,6 +106,6 @@ public class FullModelExternal extends Agent{
             }
         }
 
-        return (super.getAgg() + bonus + x  >= super.getW().getRamdom());
+        return (super.getAgg() + bonus + x  >= super.getW().getRamdomFight());
     }
 }
