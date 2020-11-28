@@ -1,20 +1,26 @@
+setwd("C:/Users/Simon Møller Nielsen/Documents/PresidentialDebates/Tweets")
 setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation")
 
 v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
 
-v <- read.csv("Debate2012_2_tidy.csv")
-
+c <- read.csv("Tweets1_tidy.csv")
+c <- read.csv("Debate2012_3_tidy.csv")
 
 setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation/data")
+v2 <-read.csv2("test.csv2")
+v1 <-read.csv2("test.csv2")
 
-
+v<-v1
 library(ggplot2)
 
+#5562
+#5975
+#5644
 v <- read.csv2("test.csv2")
 
-person <- (as.factor(rep(1, 5975)))
+person <- (as.factor(rep(1, 5644)))
 data1 <- data.frame(v[,"tweetCountDem"],v[,"turn"],person)
-person <- (as.factor(rep(2, 5975)))
+person <- (as.factor(rep(2, 5644)))
 data2 <- data.frame(v[,"tweetCountRep"],v[,"turn"],person)
 
 
@@ -22,13 +28,24 @@ colnames(data1)[1] <- "tweetCount"
 colnames(data2)[1] <- "tweetCount"
 
 data <- rbind(data1, data2)
-colnames(data)[2] <- "democratAggression"
+colnames(data)[2] <- "turns"
 
-ggplot(data, aes(democratAggression,tweetCount))+
-  geom_point(aes(colour = factor(person)))+
+ggplot(data, aes(turns,tweetCount))+
+  geom_point(aes(colour = factor(person)) , alpha = 0.5)+
   labs(color = "Mentions")+
   labs(x = "turn" ,color = "Mentions")+
-  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))#+
+  #xlim(1000, 2000)
+
+ggplot(data, aes(turns,tweetCount))+
+  geom_point()+
+  labs(color = "Mentions")+
+  labs(x = "turn" ,color = "Mentions")+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))+
+  xlim(15, 6000)+
+  ylim(1000, 1600)
+
+sd(data1[,"tweetCount"])
 
 #+
 #  xlim(5, 6000)+

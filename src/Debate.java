@@ -18,6 +18,8 @@ public class Debate {
     private int curindex; // current index
     private int lastmeme; // time since last meme
     private int turn; // for holding current turn
+    private int demspeakingturns; // number of turns the democrat candidate has spoken for
+    private int repspeakingturns; // number of turns the republican candidate has spoken for
     private ArrayList<String> memewords = new ArrayList<>(); // list of the words that should be recognised as memes
 
     /**
@@ -50,10 +52,20 @@ public class Debate {
     public int getSpeaker(){return (speaker.get(curindex));}
     public ArrayList<Integer> getEnd(){return (end);}
     public boolean getInterrupt(){return (interrupt.get(curindex));}
-    public int getSpeakingturns(){return (turn - start.get(curindex));}
     public ArrayList<String> getMemewords(){return (memewords);}
     public int getLastmeme(){return (lastmeme);}
     public int getTurn(){return (turn);}
+
+    /**
+     * Returns how long a speaker been speaking for
+     * @param dem True of you want to know about the democrat speaker, false for republican
+     */
+    public int speakeingTurns (boolean dem){
+        if (dem) {
+            return (demspeakingturns);
+        }
+        return (repspeakingturns);
+    }
 
     /**
      * Makes the debate object advance its indexing to the turn give (cannot go backwards)
@@ -61,10 +73,14 @@ public class Debate {
      */
     public void advanceTime(int turn) {
         this.turn = turn;
+
+        // check to see if the speaker has change. Done be looking at the time of the end of speech
         if (end.get(curindex) <= turn) {
+            // find the first index of the new speaking turn
             while (end.get(curindex) <= turn) {
                 curindex++;
             }
+            // look to if the words spoken in the new speaking turn
             for (String word : getWord()){
                 for (String meme : getMemewords()){
                     if (word.equals(meme)){
@@ -76,6 +92,43 @@ public class Debate {
                     lastmeme = turn + (int) ((1+getWord().indexOf("big")) * ((double) (end.get(curindex) - start.get(curindex))/getWord().size()));
                 }
             }
+        }
+
+        // count up the number of turns a candidate has spoken for
+        // for democrat
+        int decrease = 1;
+        switch (speaker.get(curindex)){
+            // for none
+            case 0:
+                // If the candidate has more then 5 turns spoken then count it down by 5 (to give a gradual decrease in aggression and not a strait cut of, to overcome small interrupts)
+                if (repspeakingturns >= decrease){
+                    repspeakingturns = repspeakingturns - decrease;
+                } else {
+                    repspeakingturns = 0;
+                }
+                if (demspeakingturns >= decrease){
+                    demspeakingturns = demspeakingturns - decrease;
+                } else {
+                    demspeakingturns = 0;
+                }
+                break;
+            // for democrat
+            case 1:
+                demspeakingturns++;
+                if (repspeakingturns >= decrease){
+                    repspeakingturns = repspeakingturns - decrease;
+                } else {
+                    repspeakingturns = 0;
+                }
+                break;
+            // for republican
+            default:
+                repspeakingturns++;
+                if (demspeakingturns >= decrease){
+                    demspeakingturns = demspeakingturns - decrease;
+                } else {
+                    demspeakingturns = 0;
+                }
         }
     }
 
@@ -104,9 +157,9 @@ public class Debate {
      * @return The current tweet chance modifier
      */
     public double interestFunc (){
-        // Interest decay function: (-0.00001t^2) + 0.06t + 10 .  t is times since the start of the debate
-        // 100 max value
-        return ((-0.00001*(Math.pow(turn,2)) + (0.06*turn) + 10)/100);
+        // Interest decay function: (-0.00001t^2) + 0.08t + 10 .  t is times since the start of the debate
+        // 170 max value
+        return ((-0.00001*(Math.pow(turn,2)) + (0.06*turn) + 200)/300);
     }
 
     /**

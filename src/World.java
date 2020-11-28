@@ -138,6 +138,7 @@ public class World {
                 }
             }
             output(savefliename); // save the data
+            // without external factors
         } else {
             for (int i = 0; i < nDems; i++) {
                 agents.add(new FullModelNoExternal(true, demAgg, demDef, demT, demnet, this));
@@ -165,6 +166,7 @@ public class World {
         // output simulation by simulation totals, mostly for debugging purposes
         System.out.println( "Sum Democrats: " + tweetcountdemtotal);
         System.out.println( "Sum Republicans: " + tweetcountreptotal);
+        System.out.println( "Total: " + (tweetcountdemtotal + tweetcountreptotal));
         /*
         System.out.println(retweets);
         System.out.println(normaltweets);

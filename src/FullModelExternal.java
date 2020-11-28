@@ -74,7 +74,8 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public int getT() {
-        return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
+        return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc());
+        //(int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
     }
 
     /**
@@ -83,7 +84,8 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public int getRT() {
-        return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
+        return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc());
+        //(int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
     }
 
     /**
@@ -101,7 +103,7 @@ public class FullModelExternal extends Agent{
 
         // check if I my candidate is speaker and I should get and increase to aggression
         if (speak == super.getW().getDebate().getSpeaker()){
-            bonus = bonus + super.getW().getSpeakera() + super.getW().getDebate().getSpeakingturns() * super.getW().getSpeakerb();
+            bonus = bonus + super.getW().getSpeakera() + super.getW().getDebate().speakeingTurns(this.getDem()) * super.getW().getSpeakerb();
             // check if it was an interrupt and I should increase to aggression even further
             if (super.getW().getDebate().getInterrupt()){
                 bonus = bonus + super.getW().getInterruptsv();
