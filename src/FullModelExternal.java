@@ -45,11 +45,11 @@ public class FullModelExternal extends Agent{
         }
 
         // normal tweet behavior
-        if (super.getW().getNortb()) {
-            if (super.normalTweet()) {
-                return (0);
-            }
+        //if (super.getW().getNortb()) {
+        if (super.normalTweet()) {
+            return (0);
         }
+        //}
 
         // aggressive tweet behavior
         /*
@@ -74,7 +74,10 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public int getT() {
-        return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc());
+        if (super.getW().getLtm()) {
+            return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc());
+        }
+        return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc());
         //(int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeTweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
     }
 
@@ -84,7 +87,10 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public int getRT() {
-        return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc());
+        if (super.getW().getLtm()) {
+            return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc());
+        }
+        return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc());
         //(int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
     }
 

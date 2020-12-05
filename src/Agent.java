@@ -107,13 +107,17 @@ public class Agent{
     public boolean normalTweet (){
         // for now if an agent is not making a tweet then there is a percent chance (given by the t value) they will start making one about its candidate
         if (getT() >= getW().getRamdomLarge()) {
-            if (aggTweet()){
+            if (getW().getAggtb()) {
+                if (aggTweet()) {
+                    return (true);
+                }
+            }
+            if (getW().getNortb()) {
+                setWhatTweet(true);
+                changeTwitting(1);
+                setTweetP(getDem());
                 return (true);
             }
-            changeTwitting(1);
-            setTweetP(getDem());
-            setWhatTweet(true);
-            return (true);
         }
         return (false);
     }
@@ -125,6 +129,7 @@ public class Agent{
     public boolean aggTweet (){
         // decide if agent is aggressively trying to find a partner (Mentioning someone in the tweet or hashtag hijacking)
         if (fight(0)) {
+            setWhatTweet(true);
             changeTwitting(1);
             setTweetP(getDem());
             setPartner(getW().getFighter(getDem()));
@@ -150,7 +155,7 @@ public class Agent{
     public boolean retweet (){
         // retweet behavior. Will take difference in number of tweets by each side. If we have more tweets then the other side it is more likely we will find a tweet to retweet modified by net
         // First decide if it wants to retweet, if number of total tweets are > 0.
-        if (getW().getTweetCountDemTotal() + getW().getTweetCountRepTotal() != 0 && (getRT()*2) >= getW().getRamdomLarge()) {
+        if (getW().getTweetCountDemTotal() + getW().getTweetCountRepTotal() != 0 && getRT() >= getW().getRamdomLarge()) {
             // If democrat find out of they find a tweet from same partisanship
             if (getDem() && 100*((getNet() * getW().getTweetCountDemTotal()) / (getNet() * getW().getTweetCountDemTotal() + getW().getTweetCountRepTotal())) >= getW().getRamdom()) {
                 // Find out if the tweet is going to be about a democrat or republican

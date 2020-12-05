@@ -48,16 +48,16 @@ public class GUI implements ActionListener {
         JTextField input2 = new JTextField("100"); // aggression of democrats
         JTextField input3 = new JTextField("12500"); // number of republicans
         JTextField input4 = new JTextField("100"); // aggression of republicans
-        JTextField input6 = new JTextField("400"); // defence modifier on aggression of democrats
-        JTextField input7 = new JTextField("250"); // defence modifier on aggression of republicans
+        JTextField input6 = new JTextField("300"); // defence modifier on aggression of democrats
+        JTextField input7 = new JTextField("300"); // defence modifier on aggression of republicans
         JTextField input8 = new JTextField("1800"); // likelihood of democrats deciding to tweet
         JTextField input9 = new JTextField("1800"); // likelihood of republicans deciding to tweet
-        JTextField input10 = new JTextField("1.00"); // connectedness of democrats, increases likelihood of retweet
-        JTextField input11 = new JTextField("1.00"); // connectedness of republicans, increases likelihood of retweet
+        JTextField input10 = new JTextField("10.00"); // connectedness of democrats, increases likelihood of retweet
+        JTextField input11 = new JTextField("10.00"); // connectedness of republicans, increases likelihood of retweet
         JTextField input12 = new JTextField("0.00"); // a value of impact of speaker, increase to aggression
-        JTextField input16 = new JTextField("4.00"); // b value of impact of speaker, increase to aggression
+        JTextField input16 = new JTextField("5.00"); // b value of impact of speaker, increase to aggression
         JTextField input13 = new JTextField("200"); // impact of interrupt, increase to aggression
-        JTextField input14 = new JTextField("500"); // impact of memes, increase in likelihood of tweeting
+        JTextField input14 = new JTextField("1800"); // impact of memes, increase in likelihood of tweeting
         JTextField input15 = new JTextField("500"); // value of the interest decay function
 
         // text box layout
@@ -70,10 +70,10 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("Number of Democrats:"));
         pane.add(input1);
 
-        pane.add(new JLabel("Democrats aggression [0-100]:"));
+        pane.add(new JLabel("Democrats aggression [0-1000]:"));
         pane.add(input2);
 
-        pane.add(new JLabel("Democrats defence modifier added to aggression in case of defence:"));
+        pane.add(new JLabel("Democrats defence modifier added to aggression in case of defence [0-1000]:"));
         pane.add(input6);
 
         pane.add(new JLabel("Likelihood of democrats deciding to tweet [0-1000000]:"));
@@ -85,10 +85,10 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("Number of Republicans:"));
         pane.add(input3);
 
-        pane.add(new JLabel("Republicans aggression [0-100]:"));
+        pane.add(new JLabel("Republicans aggression [0-1000]:"));
         pane.add(input4);
 
-        pane.add(new JLabel("Republicans defence modifier added to aggression in case of defence:"));
+        pane.add(new JLabel("Republicans defence modifier added to aggression in case of defence [0-1000]:"));
         pane.add(input7);
 
         pane.add(new JLabel("Likelihood of republicans deciding to tweet [0-1000000]:"));
@@ -97,20 +97,26 @@ public class GUI implements ActionListener {
         pane.add(new JLabel("<html> Connectedness of republicans, increases likelihood  of retweet <br> 1: no polarization, > 1 more polarized:</html>"));
         pane.add(input11);
 
-        pane.add(new JLabel("a value of impact of speaker, increase to aggression:"));
+        pane.add(new JLabel("a value of impact of speaker, increase to aggression [0-1000]:"));
         pane.add(input12);
 
-        pane.add(new JLabel("b value of impact of speaker, increase to aggression"));
+        pane.add(new JLabel("b value of impact of speaker, increase to aggression [0-1000]:"));
         pane.add(input16);
 
-        pane.add(new JLabel("Impact of interrupt, added to aggression [0-100]:"));
+        pane.add(new JLabel("Impact of interrupt, added to aggression [0-1000]:"));
         pane.add(input13);
 
         pane.add(new JLabel("Max impact of memes, added to likelihood of tweeting [0-1000000]:"));
         pane.add(input14);
 
-        pane.add(new JLabel("Max impact the long term attention, added to likelihood of tweeting [0-1000000]:"));
+        pane.add(new JLabel("Max impact the long term attention, added to likelihood of tweeting [0-1000000] !not used!:"));
         pane.add(input15);
+
+        // drop down menu for turning long term attention off
+        pane.add(new JLabel("Long term attention:"));
+        String[] simoptions6 = {"On", "Off"};
+        JComboBox<String> combobox6 = new JComboBox<>(simoptions6);
+        pane.add(combobox6);
 
         // drop down menu for turning tweet behavior on and off
         pane.add(new JLabel("Normal tweet behavior:"));
@@ -166,11 +172,21 @@ public class GUI implements ActionListener {
         int interestdecayv = parseInt(input15.getText());
 
         // converting behavior input
+        boolean ltm = true;
         boolean nortb = true;
         boolean aggtb = true;
         boolean retb = true;
         boolean useex = true;
         String debatename = "none";
+        String ltmin = Objects.requireNonNull(combobox6.getSelectedItem()).toString();
+        switch (ltmin) {
+            case "On":
+                ltm = true;
+                break;
+            case "Off":
+                ltm = false;
+                break;
+        }
         String norb = Objects.requireNonNull(combobox1.getSelectedItem()).toString();
         switch (norb) {
             case "On":
@@ -266,7 +282,7 @@ public class GUI implements ActionListener {
             String simSelected = Objects.requireNonNull(combobox5.getSelectedItem()).toString();
             switch (simSelected) {
                 case "None":
-                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, input5.getText());
+                    world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, demnet, repnet, ltm, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, input5.getText());
                     tweetsp1.add(world.getTweetCountDemTotal());
                     tweetsp2.add(world.getTweetCountRepTotal());
                     turnsfull.add(turns);
@@ -287,7 +303,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats aggression":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
+                        world = new World(turns, nDems, nReps, i, repAgg, demdef, repdef, demt, rept, demnet, repnet, ltm, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -309,7 +325,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats defence modifier":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, i, repdef, demt, rept, demnet, repnet, ltm, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -332,7 +348,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Democrats likelihood of tweeting":
                     for (int i = 0; i < 101; i++) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, i, rept, demnet, repnet, ltm, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);
@@ -355,7 +371,7 @@ public class GUI implements ActionListener {
                     break;
                 case "Connectedness of democrat network":
                     for (double i = 0.00; i < 5; i = i + 0.01) {
-                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
+                        world = new World(turns, nDems, nReps, demAgg, repAgg, demdef, repdef, demt, rept, i, repnet, ltm, nortb, aggtb, retb, useex, speakera, speakerb, interruptsv, memev, interestdecayv, debatename, "dummy");
                         tweetsp1.add(world.getTweetCountDemTotal());
                         tweetsp2.add(world.getTweetCountRepTotal());
                         turnsfull.add(turns);

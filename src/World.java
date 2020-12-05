@@ -28,6 +28,7 @@ public class World {
     private int repT; // likelihood of republicans deciding to tweet
     private double demnet; // connectedness of democrats, increases likelihood of retweet
     private double repnet; // connectedness of republicans, increases likelihood of retweet
+    private boolean ltm; // switch for long term attention, true = on
     private boolean nortb; // switch for the normal tweet behavior, true = on
     private boolean aggtb; // switch for the aggressive tweet behavior, true = on
     private boolean retb; // switch for the retweet behavior, true = on
@@ -64,19 +65,20 @@ public class World {
      * @param repT likelihood of republicans deciding to tweet
      * @param demnet connectedness of democrats, increases likelihood of retweet
      * @param repnet connectedness of republicans, increases likelihood of retweet
-     * @param aggtb
-     * @param retb
-     * @param nortb
-     * @param useex
-     * @param speakera
-     * @param speakerb
-     * @param interruptsv
-     * @param memev
-     * @param interestdecayv
-     * @param debatename
-     * @param savefliename
+     * @param aggtb switch for the aggressive tweet behavior, true = on
+     * @param retb switch for the retweet behavior, true = on
+     * @param ltm switch for long term attention, true = on
+     * @param nortb switch for the normal tweet behavior, true = on
+     * @param useex switch for using external factors, true = on
+     * @param speakera alpha value for the impact of speaker [0-1000]
+     * @param speakerb beta value for the impact of speaker [0-1000]
+     * @param interruptsv value for the impact of interrupts [0-1000000]
+     * @param memev value for the impact of memes [0-1000000]
+     * @param interestdecayv value used in the interest decay function [0-1000000]
+     * @param debatename file move of the debate data used as external factors
+     * @param savefliename name of the save file that the simulation output should be saved as
      */
-    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean nortb, boolean aggtb, boolean retb, boolean useex, double speakera, double speakerb, int interruptsv, int memev, int interestdecayv, String debatename, String savefliename){
+    public World(int turns, int nDems, int nReps, int demAgg , int repAgg, int demDef, int repDef, int demT, int repT, double demnet, double repnet, boolean ltm, boolean nortb, boolean aggtb, boolean retb, boolean useex, double speakera, double speakerb, int interruptsv, int memev, int interestdecayv, String debatename, String savefliename){
         // initialising the tweet counters
         retweets = 0;
         normaltweets = 0;
@@ -102,6 +104,7 @@ public class World {
         this.repT = repT;
         this.demnet = demnet;
         this.repnet = repnet;
+        this.ltm = ltm;
         this.nortb = nortb;
         this.aggtb = aggtb;
         this.retb = retb;
@@ -185,6 +188,7 @@ public class World {
     public int getRamdomLarge(){return (random.nextInt(1000000)+1);}
     public int getRetweets(){return (retweets);}
     public int getNormalTweets(){return (normaltweets);}
+    public boolean getLtm(){return (ltm);}
     public boolean getNortb(){return (nortb);}
     public boolean getAggtb(){return (aggtb);}
     public boolean getRetb(){return (retb);}
@@ -282,6 +286,7 @@ public class World {
         //output turn by turn totals, mostly for debugging purposes
         //System.out.println("turn:" + turn + " "  + "dem:" + tweetcountdem + " " + "rep:" + tweetcountrep);
         //turn++;
+        //System.out.println(debate.speakeingTurns(true));
 
         // adding new totals needed in the retweet calculations
         tweetcountdemtotal = tweetcountdemtotal + tweetcountdem;

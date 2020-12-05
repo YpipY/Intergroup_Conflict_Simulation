@@ -137,7 +137,7 @@ public class Debate {
      * @return The percentage to increase tweet chance with
      */
     public double memeTweetFunc (){
-        // Meme function tweet: (1/(1+e^(-0.75(t-25)) * (1000*e^(-0.015t))) . t is times since meme onset
+        // Meme function tweet: (1/(1+e^(-0.75(t-15)) * (1000*e^(-0.015t))) . t is times since meme onset
         // 724 max value
         return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-15)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/724);
     }
@@ -147,7 +147,7 @@ public class Debate {
      * @return The percentage to increase retweet chance with
      */
     public double memeRetweetFunc (){
-        // Meme function retweet: (1/(1+e^(-0.75(t-15)) * (1000*e^(-0.015t))) . t is times since meme onset
+        // Meme function retweet: (1/(1+e^(-0.75(t-25)) * (1000*e^(-0.015t))) . t is times since meme onset
         // 724 max value
         return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-25)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/724);
     }
@@ -157,7 +157,7 @@ public class Debate {
      * @return The current tweet chance modifier
      */
     public double interestFunc (){
-        // Interest decay function: (-0.00001t^2) + 0.08t + 10 .  t is times since the start of the debate
+        // Interest decay function: (-0.00001t^2) + 0.06t + 200/300 .  t is times since the start of the debate
         // 170 max value
         return ((-0.00001*(Math.pow(turn,2)) + (0.06*turn) + 200)/300);
     }

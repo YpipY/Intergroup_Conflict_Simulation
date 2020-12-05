@@ -45,11 +45,11 @@ public class FullModelNoExternal extends Agent{
         }
 
         // normal tweet behavior
-        if (super.getW().getNortb()) {
-            if (super.normalTweet()) {
-                return (0);
-            }
+        //if (super.getW().getNortb()) {
+        if (super.normalTweet()) {
+            return (0);
         }
+        //}
 
         // aggressive tweet behavior
         /*

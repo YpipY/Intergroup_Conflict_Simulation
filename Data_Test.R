@@ -1,22 +1,35 @@
 setwd("C:/Users/Simon Møller Nielsen/Documents/PresidentialDebates/Tweets")
 setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation")
 
-v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
+sum(c$ObamaObamaSupport,na.rm = TRUE)
+sum(c$RomneyRomneySupport,na.rm = TRUE)
+sum(c$ObamaRomneySupport,na.rm = TRUE)
+sum(c$RomneyObamaSupport,na.rm = TRUE)
+sum(c$Tweets,na.rm = TRUE)
 
-c <- read.csv("Tweets1_tidy.csv")
-c <- read.csv("Debate2012_3_tidy.csv")
+v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
+c <- read.csv("Tweets1_clean.csv")
+
+c <- read.csv("Debate3_2012_summary.csv")
+c2 <- read.csv("Debate2012_3_tidy.csv")
 
 setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation/data")
 v2 <-read.csv2("test.csv2")
 v1 <-read.csv2("test.csv2")
 
 v<-v1
-library(ggplot2)
-
+5*100
+500/1000000 *100000
 #5562
 #5975
 #5644
-v <- read.csv2("test.csv2")
+library(ggplot2)
+239439 / 469657
+sum(v$numberOfRetweets,na.rm = TRUE)
+sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE)
+sum(v$numberOfRetweets,na.rm = TRUE) / (sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE))
+
+v <- read.csv2("FullModelNoDefense.csv2")
 
 person <- (as.factor(rep(1, 5644)))
 data1 <- data.frame(v[,"tweetCountDem"],v[,"turn"],person)
@@ -32,10 +45,9 @@ colnames(data)[2] <- "turns"
 
 ggplot(data, aes(turns,tweetCount))+
   geom_point(aes(colour = factor(person)) , alpha = 0.5)+
-  labs(color = "Mentions")+
-  labs(x = "turn" ,color = "Mentions")+
+  labs(title = "Full Model No Defence",x = "Turn (seconds)", y = "Mentions",color = "Candidate")+
   scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))#+
-  #xlim(1000, 2000)
+  #xlim(0000, 1000)
 
 ggplot(data, aes(turns,tweetCount))+
   geom_point()+
