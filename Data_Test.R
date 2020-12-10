@@ -29,7 +29,7 @@ sum(v$numberOfRetweets,na.rm = TRUE)
 sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE)
 sum(v$numberOfRetweets,na.rm = TRUE) / (sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE))
 
-v <- read.csv2("FullModelNoDefense.csv2")
+v <- read.csv2("test.csv2")
 
 person <- (as.factor(rep(1, 5644)))
 data1 <- data.frame(v[,"tweetCountDem"],v[,"turn"],person)
@@ -45,7 +45,7 @@ colnames(data)[2] <- "turns"
 
 ggplot(data, aes(turns,tweetCount))+
   geom_point(aes(colour = factor(person)) , alpha = 0.5)+
-  labs(title = "Full Model No Defence",x = "Turn (seconds)", y = "Mentions",color = "Candidate")+
+  labs(title = "Full Model No Normal",x = "Turn (seconds)", y = "Mentions",color = "Candidate")+
   scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))#+
   #xlim(0000, 1000)
 
