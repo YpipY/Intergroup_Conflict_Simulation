@@ -1,4 +1,4 @@
-setwd("C:/Users/Simon Møller Nielsen/Documents/PresidentialDebates/Tweets")
+
 setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation")
 
 sum(c$ObamaObamaSupport,na.rm = TRUE)
@@ -10,32 +10,77 @@ sum(c$Tweets,na.rm = TRUE)
 v <- read.table(file = 'Debate1_clean.tsv', sep = '\t', header = TRUE)
 c <- read.csv("Tweets1_clean.csv")
 
-c <- read.csv("Debate3_2012_summary.csv")
-c2 <- read.csv("Debate2012_3_tidy.csv")
+setwd("C:/Users/Simon Møller Nielsen/Documents/PresidentialDebates/Tweets")
+
+c <- read.csv("Debate3_2016_summary.csv")
+
+person <- (as.factor(rep(1, 5506)))
+c3 <- data.frame(c[,"Interlocutor"],c[,"TimeTweet"],"tweetCount" = as.numeric(70))
+colnames(c3)[1] <- "Interlocutor"
+colnames(c3)[2] <- "turns"
+
+c4 <- subset(c3, Interlocutor == "Obama")
+c5 <- subset(c3, Interlocutor == "Romney")
+
+colnames(data1)[1] <- "tweetCount"
+colnames(data2)[1] <- "tweetCount"
+
+data <- rbind(data1, data2)
+colnames(data)[2] <- "turns"
+
 
 setwd("C:/Users/Simon MØller Nielsen/Documents/Intergroup Conflict Simulation/data")
 v2 <-read.csv2("test.csv2")
 v1 <-read.csv2("test.csv2")
 
 v<-v1
-5*100
-500/1000000 *100000
+
+test <- v$numberOfNormalTweets + v$numberOfRetweets
+mean(test)
+sd(test)
+sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE)
+
+231778+266801
+
 #5562
 #5975
 #5644
+469657/25000
 library(ggplot2)
 239439 / 469657
+sum(c$Obama,na.rm = TRUE)
+sum(c$Romney,na.rm = TRUE)
+sum(v$tweetCountDem,na.rm = TRUE)
+sum(v$tweetCountRep,na.rm = TRUE)
 sum(v$numberOfRetweets,na.rm = TRUE)
 sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE)
 sum(v$numberOfRetweets,na.rm = TRUE) / (sum(v$numberOfNormalTweets,na.rm = TRUE) + sum(v$numberOfRetweets,na.rm = TRUE))
+231778+266801
 
-v <- read.csv2("test.csv2")
 
-person <- (as.factor(rep(1, 5644)))
+
+3rdAggMod2.csv2
+3rdDeftest3.csv2
+3rdMoreReps2.csv2
+3rdNettest3.csv2
+3rdProInc1.csv2
+
+
+
+3rd2016Full.csv2
+3rd2016NoReg.csv2
+3rd2016NoAgg.csv2
+3rd2016NoRet.csv2
+3rd2016NoSpe.csv2
+3rd2016NoInt.csv2
+3rd2016NoMem.csv2
+3rd2016NoDec.csv2
+
+v <- read.csv2("3rd2016NoDec.csv2")
+person <- (as.factor(rep(1, 5801)))
 data1 <- data.frame(v[,"tweetCountDem"],v[,"turn"],person)
-person <- (as.factor(rep(2, 5644)))
+person <- (as.factor(rep(2, 5801)))
 data2 <- data.frame(v[,"tweetCountRep"],v[,"turn"],person)
-
 
 colnames(data1)[1] <- "tweetCount"
 colnames(data2)[1] <- "tweetCount"
@@ -44,10 +89,50 @@ data <- rbind(data1, data2)
 colnames(data)[2] <- "turns"
 
 ggplot(data, aes(turns,tweetCount))+
-  geom_point(aes(colour = factor(person)) , alpha = 0.5)+
-  labs(title = "Full Model No Normal",x = "Turn (seconds)", y = "Mentions",color = "Candidate")+
-  scale_color_manual(labels = c("Democrat", "Republican"), values = c("blue", "red"))#+
-  #xlim(0000, 1000)
+  geom_point(aes(colour = factor(person)) , alpha = 0.35, size = 1)+
+  labs(title = "3rd Debate 2016 No Attention Decay" ,x = "Turn (seconds)", y = "Mentions per turn (count)",color = "Candidate")+
+  geom_col(data=c3 , aes(fill = factor(Interlocutor)), alpha = 0.1)+
+  scale_fill_manual("Speaker", labels = c("Moderator/Unknown", "Clinton", "Trump", "1", "2" ), values = c("COPPER:" = "white", "RADDATZ:" = "white", "what" = "white", "Clinton:" = "blue", "Trump:" = "red"))+
+  scale_color_manual(labels = c("Democrat", "Republican"), values = c("red", "blue"))+
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5))#+
+  #ylim(0, 120)
+
+#"3rd Debate 2012 Full Model"
+#"3rd Debate 2012 No Regular Tweet Behavior"
+#"3rd Debate 2012 No Conversation Seeking Behavior"
+#"3rd Debate 2012 No Retweet Behavior"
+#"3rd Debate 2012 No Speaker"
+#"3rd Debate 2012 No Interruptions"
+#"3rd Debate 2012 No Meme Function"
+#"3rd Debate 2012 No Attention Decay"
+
+#"3rd Debate 2012 No Network"
+#"3rd Debate 2012 No Defense Modifier"
+
+#"3rd Debate 2012 Different Base Agression Chance"
+#"3rd Debate 2012 Different Defense Modifier"
+#"3rd Debate 2012 Different Number Of Partisans"
+#"3rd Debate 2012 Different Network Modifier"
+#"3rd Debate 2012 Different Base Tweet Chance"
+
+person <- (as.factor(rep(1, 5506)))
+data1 <- data.frame(c[,"Clinton"],c[,"TimeTweet"],person)
+person <- (as.factor(rep(2, 5506)))
+data2 <- data.frame(c[,"Trump"],c[,"TimeTweet"],person)
+
+colnames(data1)[1] <- "tweetCount"
+colnames(data2)[1] <- "tweetCount"
+
+data <- rbind(data1, data2)
+colnames(data)[2] <- "turns"
+
+ggplot(data, aes(turns, tweetCount))+
+  geom_point(aes(colour = factor(person)) , alpha = 0.35, size = 1)+
+  labs(title = "3rd Debate 2016 Real Data", x = "Time (seconds)", y = "Mentions per second (count)",color = "Candidate")+
+  geom_col(data=c3 , aes(fill = factor(Interlocutor)), alpha = 0.1)+
+  scale_fill_manual("Speaker", labels = c("Moderator/Unknown", "Clinton", "Trump" ), values = c("COPPER:" = "white", "Clinton:" = "blue", "Trump:" = "red"))+
+  scale_color_manual(labels = c("Clinton", "Trump"), values = c("blue", "red"))+
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
 
 ggplot(data, aes(turns,tweetCount))+
   geom_point()+

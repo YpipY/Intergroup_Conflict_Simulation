@@ -44,20 +44,20 @@ public class GUI implements ActionListener {
         JPanel pane = new JPanel();
         // in quotation is default values
         JTextField input0 = new JTextField("5400"); //turns. 5400 for full 90 minutes
-        JTextField input1 = new JTextField("12500"); // number of democrats
+        JTextField input1 = new JTextField("127822"); // number of democrats
         JTextField input2 = new JTextField("100"); // aggression of democrats
-        JTextField input3 = new JTextField("12500"); // number of republicans
+        JTextField input3 = new JTextField("127822"); // number of republicans
         JTextField input4 = new JTextField("100"); // aggression of republicans
         JTextField input6 = new JTextField("300"); // defence modifier on aggression of democrats
         JTextField input7 = new JTextField("300"); // defence modifier on aggression of republicans
-        JTextField input8 = new JTextField("1800"); // likelihood of democrats deciding to tweet
-        JTextField input9 = new JTextField("1800"); // likelihood of republicans deciding to tweet
+        JTextField input8 = new JTextField("175"); // likelihood of democrats deciding to tweet
+        JTextField input9 = new JTextField("175"); // likelihood of republicans deciding to tweet
         JTextField input10 = new JTextField("10.00"); // connectedness of democrats, increases likelihood of retweet
         JTextField input11 = new JTextField("10.00"); // connectedness of republicans, increases likelihood of retweet
         JTextField input12 = new JTextField("0.00"); // a value of impact of speaker, increase to aggression
-        JTextField input16 = new JTextField("5.00"); // b value of impact of speaker, increase to aggression
+        JTextField input16 = new JTextField("4.00"); // b value of impact of speaker, increase to aggression
         JTextField input13 = new JTextField("200"); // impact of interrupt, increase to aggression
-        JTextField input14 = new JTextField("1800"); // impact of memes, increase in likelihood of tweeting
+        JTextField input14 = new JTextField("175"); // impact of memes, increase in likelihood of tweeting
         JTextField input15 = new JTextField("500"); // value of the interest decay function
 
         // text box layout

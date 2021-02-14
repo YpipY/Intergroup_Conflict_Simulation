@@ -87,16 +87,17 @@ public class FullModelExternal extends Agent{
      **/
     @Override
     public int getRT() {
-        /*
         if (super.getW().getLtm()) {
             return (int) (super.getBaseT() * super.getW().getDebate().interestFunc() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc());
         }
         return (int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc());
-         */
+        /*
         if (super.getW().getLtm()) {
             return (int) (super.getBaseT() * super.getW().getDebate().interestFunc());
         }
         return super.getBaseT();
+        */
+
         //(int) (super.getBaseT() + super.getW().getMemev() * super.getW().getDebate().memeRetweetFunc() + super.getW().getInterestdecayv() * super.getW().getDebate().interestFunc());
     }
 

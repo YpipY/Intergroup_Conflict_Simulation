@@ -138,8 +138,8 @@ public class Debate {
      */
     public double memeTweetFunc (){
         // Meme function tweet: (1/(1+e^(-0.75(t-15)) * (1000*e^(-0.015t))) . t is times since meme onset
-        // 724 max value
-        return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-15)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/724);
+        // 723.95 max value
+        return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-15)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/723.95);
     }
 
     /**
@@ -148,8 +148,8 @@ public class Debate {
      */
     public double memeRetweetFunc (){
         // Meme function retweet: (1/(1+e^(-0.75(t-25)) * (1000*e^(-0.015t))) . t is times since meme onset
-        // 724 max value
-        return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-25)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/724);
+        // 632.11 max value
+        return ((1/(1+(Math.exp(-0.75*((getTurn()-getLastmeme())-25)))) * (1000*(Math.exp((-0.015*(getTurn()-getLastmeme()))))))/632.11);
     }
 
     /**
